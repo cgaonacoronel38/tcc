@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html lang="es-ES"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions" 
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition  template="/WEB-INF/facelets/template/gdm.xhtml"> 
+        <ui:define name="content-center">
+            <h:form id="form" style="height: 700px;" >
+                <p:growl id="growl" showDetail="true" autoUpdate="true" />
+                <p:accordionPanel>
+                    <p:tab title="Crear usuario">
+                        <h:panelGrid columns="2" id="pgCreate">
+                            <p:outputLabel value="Compañía: *" />
+                            <p:selectOneMenu value="#{editUser.selectedUserPk.idcompany}" 
+                                             filter="true" 
+                                             filterMatchMode="startsWith"
+                                             effect="fade" >
+                                <f:selectItems value="#{editUser.listCompany}" var="c" itemLabel="#{c.description}" itemValue="#{c.idcompany}"/>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="Usuario: *" />
+                            <p:inputText value="#{editUser.selectedUser.username}" required="true" label="Nombre requerido"/>
+
+                            <p:outputLabel value="Contraseña: *" />
+                            <p:password value="#{editUser.selectedUser.password}" required="true" label="Contraseña requerida"/>
+
+                            <p:outputLabel value="Estado: *" />
+                            <p:selectOneMenu value="#{editUser.selectedUser.userstatus}" effect="fade" >
+                                <f:selectItem itemLabel="ACTIVO" itemValue="ACTIVE"/>
+                                <f:selectItem itemLabel="BLOQUEADO" itemValue="LOCKED"/>
+                            </p:selectOneMenu>
+                        </h:panelGrid>
+                        <p:panelGrid>
+                            <p:pickList id="pickList" value="#{editUser.groups}" var="groups" itemLabel="#{groups.description}" itemValue="#{groups}" />
+                        </p:panelGrid>
+                        <p:commandButton value="Confirmar"
+                                         id="btnQuery"
+                                         actionListener="#{editUser.create()}" 
+                                         style="margin: 5px 0px!important;" 
+                                         update="@([id$=pgCreate]) @([id$=datalist])"/>
+                    </p:tab>
+                    <p:tab title="Editar usuarios">
+                        <p:dataTable id="datalist" value="#{editUser.listUser}" var="cp"
+                                     editable="true"
+                                     paginator="true"
+                                     rows="12" >
+                            <p:ajax event="rowEdit" listener="#{editUser.editUser(cp)}" update="@([id$=growl])" />
+                            <p:ajax event="rowEditCancel" update="@([id$=growl])" />
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Compañía"/>
+                                </f:facet>
+                                <h:outputText value="#{cp.company.description}"/>
+                            </p:column>
+                            <p:column filterBy="#{cp.username}" filterMatchMode="contains">
+                                <f:facet name="header">
+                                    <h:outputText value="Usuario" />
+                                </f:facet>
+                                <h:outputText value="#{cp.username}" style="text-transform: uppercase;"/>
+                            </p:column>
+
+                            <p:column headerText="Estado">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{cp.userstatus == 'ACTIVE'?'ACTIVO':'BLOQUEADO'}"/></f:facet>
+                                    <f:facet name="input">
+                                        <h:selectOneMenu value="#{cp.userstatus}" style="width:100%; color: black!important;font-weight: bold;">
+                                            <f:selectItem itemLabel="ACTIVO" itemValue="ACTIVE" />
+                                            <f:selectItem itemLabel="BLOQUEADO" itemValue="LOCKED" />
+                                        </h:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column style="width:32px">
+                                <p:rowEditor />
+                            </p:column>
+                        </p:dataTable>
+                    </p:tab>
+                </p:accordionPanel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

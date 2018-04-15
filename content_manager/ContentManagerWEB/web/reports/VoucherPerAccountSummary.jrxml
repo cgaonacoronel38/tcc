@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="MovementServiceDetail" pageWidth="590" pageHeight="842" columnWidth="590" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="62ea3118-191a-467d-84a5-4fd605e4d9e6">
+	<property name="ireport.zoom" value="1.464100000000001"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="p_idcompany" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_fromdate" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_todate" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_refcustomer1" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_refdocnumber" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT SUM(V.TOTALVOUCHER) AS IMPORTE
+FROM BILLING.VOUCHER V
+WHERE V.ACTIVE IS TRUE
+AND V.IDCOMPANY = $P{p_idcompany}
+AND to_date(to_char(V.datemov,'dd/MM/yyyy'),'dd/MM/yyyy') between $P{p_fromdate} and $P{p_todate}
+AND ($P{p_refcustomer1} is null or V.REFCUSTOMER1 = $P{p_refcustomer1})
+AND ($P{p_refdocnumber} is null or V.REFDOCNUMBER = $P{p_refdocnumber})]]>
+	</queryString>
+	<field name="importe" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="16" splitType="Stretch">
+			<textField pattern="#,##0">
+				<reportElement x="412" y="3" width="116" height="12" uuid="e23065d4-7390-4df0-b7b5-1405b9da6c9e"/>
+				<textElement textAlignment="Right">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{importe}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="10" y="4" width="111" height="12" uuid="ef872f33-1f33-44ba-af5e-fd69267ad3dc"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL EN PERIODO: ]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="2" width="530" height="1" uuid="929d741b-fdba-422e-8b66-bd78a924e8c0"/>
+			</line>
+		</band>
+	</detail>
+</jasperReport>

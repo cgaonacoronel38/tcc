@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="555" pageHeight="802" columnWidth="535" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="6d71c9d2-1f8d-4d24-9dea-4d912ac38614">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="p_refcustomer1" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_refdocnumber" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_invoicenumber" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_idcompany" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT  refcustomer1, 
+	refdocnumber, 
+	fullname
+  FROM billing.invoice
+ where refcustomer1 = $P{p_refcustomer1}
+ and ($P{p_refdocnumber} is null or refdocnumber = $P{p_refdocnumber}) 
+ and ($P{p_invoicenumber} is null or invoicenumber = $P{p_invoicenumber}) 
+ and idcompany = $P{p_idcompany}
+ and active is true
+ limit 1;]]>
+	</queryString>
+	<field name="refcustomer1" class="java.lang.String"/>
+	<field name="refdocnumber" class="java.lang.String"/>
+	<field name="fullname" class="java.lang.String"/>
+	<detail>
+		<band height="30">
+			<staticText>
+				<reportElement x="0" y="0" width="123" height="14" uuid="e5646e76-61d6-4765-a986-a79fff1d472a"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOMBRE Y APELLIDO:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="127" y="0" width="428" height="14" uuid="5ba07108-8dab-4906-8d7b-ad67e84cc121"/>
+				<textFieldExpression><![CDATA[$F{fullname}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="14" width="95" height="14" uuid="8d65e867-54e5-4402-b6cf-97841ab3c6cf"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nº DOCUMENTO:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="96" y="14" width="127" height="14" uuid="ba1e67e2-9dd3-4800-9783-8e53036b34ad"/>
+				<textFieldExpression><![CDATA[$F{refdocnumber}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="256" y="14" width="69" height="14" uuid="a1edf96e-61ed-4e8d-9354-1fe7b1ca6ad5"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nº CUENTA:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="327" y="14" width="228" height="14" uuid="4db01011-0b31-4f7b-8cdd-1d3844bc4612"/>
+				<textFieldExpression><![CDATA[$F{refcustomer1}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

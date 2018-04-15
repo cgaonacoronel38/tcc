@@ -1,0 +1,129 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition  template="/WEB-INF/facelets/template/gdm.xhtml"> 
+        <ui:define name="content-center">
+            <h:form style="height: 750px;">
+                <p:messages autoUpdate="true" />
+                <p:accordionPanel>
+                    <p:ajax event="tabChange" listener="#{fileUpload.updateContentList()}" update="@([id$=dtContent])" />
+                    <p:tab title="Agregar contenido">
+
+                        <h:panelGrid columns="1" id="data" style="width: 100%;">
+                            <h:panelGrid columns="2" cellpadding="10" cellspacing="5" id="pgCreateLocation" rendered="false">
+                                <p:outputLabel value="Nombre"/>
+                                <p:inputText value="#{fileUpload.newContent.name}" />
+                                
+                                <p:outputLabel value="Descripcion"/>
+                                <p:inputText value="#{fileUpload.newContent.description}" />
+
+                            </h:panelGrid>
+
+                            <p:fileUpload fileUploadListener="#{fileUpload.upload}" 
+                                          mode="advanced"
+                                          id="upload"
+                                          required="true"
+                                          fileLimit="1"
+                                          allowTypes="/(\.|\/)(zip)$/"
+                                          invalidFileMessage="Tipo de archivo no válido"
+                                          fileLimitMessage="Solo se permite un archivo por vez"
+                                          requiredMessage="Archivo requerido" 
+                                          update="@([id$=filerename]) @([id$=btnGenerate])"
+                                          style="margin: 5px 0px;width: 100%;" />
+                        </h:panelGrid>
+                    </p:tab>
+                    <p:tab title="Listado de contenidos">
+                        <p:dataTable id="dtContent"
+                                     rowIndexVar="indexVar"
+                                     var="de"
+                                     value="#{fileUpload.listContent}"
+                                     paginator="true"
+                                     rows="10">
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Contenido" />
+                                </f:facet>
+                                <h:outputText value="#{de.name}" />
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Dispositivo" />
+                                </f:facet>
+                                <p:commandButton update="@([id$=dlgDeviceContent])"
+                                                 value="Ver o insertar"
+                                                 actionListener="#{fileUpload.contentSelected(de.idContent)}"
+                                                 style="margin-left: 15px;"
+                                                 id="btnDlgDeviceContent"
+                                                 oncomplete="PF('wvDeviceContent').show()"
+                                                 icon="fa fa-plus" />
+                            </p:column>
+                        </p:dataTable>
+                    </p:tab>
+                </p:accordionPanel>
+
+                <p:dialog header="Asignar contenido a ciudad"
+                          id="dlgDeviceContent"
+                          widgetVar="wvDeviceContent"
+                          modal="true"
+                          showEffect="fade"
+                          hideEffect="fade"
+                          resizable="true" 
+                          width="500">
+                    <p:outputPanel>
+                        <p:messages id="msgDlg" />
+                        <p:accordionPanel>
+                            <p:ajax event="tabChange" listener="#{fileUpload.updateDeviceContentList()}" update="@([id$=pgListaDispositivos])" />
+                            <p:tab title="Agregar dispositivo">
+                                <h:panelGrid columns="2">
+                                    <p:outputLabel value="Dispositivo"/>
+                                    <p:selectOneMenu id="somDevice" 
+                                                     value="#{fileUpload.dcIdDevice}" 
+                                                     filter="true" 
+                                                     filterMatchMode="startsWith"
+                                                     effect="fade" >
+                                        <f:selectItem itemLabel="SELECCIONE DISPOSITIVO" itemValue="" noSelectionOption="true" />
+                                        <f:selectItems value="#{fileUpload.listDevice}" var="ci" itemLabel="#{ci.description}" itemValue="#{ci.idDevice}" />
+                                    </p:selectOneMenu>
+                                </h:panelGrid>
+                                <p:commandButton id="btnQuery" value="Aceptar"  action="#{fileUpload.createDeviceContent()}" update="@([id$=msgDlg])"/>
+                            </p:tab>
+                            <p:tab title="Listado de dispositivos">
+                                <p:panelGrid columns="1" id="pgListaDispositivos">
+                                    <p:dataTable id="dtDeviceContent"
+                                                 rendered="#{not empty fileUpload.listDeviceContent}"
+                                                 rowIndexVar="indexVar"
+                                                 var="pl"
+                                                 value="#{fileUpload.listDeviceContent}"
+                                                 paginator="true"
+                                                 rows="10">
+                                        <p:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="Dispositivo" />
+                                            </f:facet>
+                                            <h:outputText value="#{pl.device.name}" />
+                                        </p:column>
+                                        
+                                        <p:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="ID" />
+                                            </f:facet>
+                                            <h:outputText value="#{pl.device.uuid}" />
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:panelGrid>
+                            </p:tab>
+                        </p:accordionPanel>
+                    </p:outputPanel>
+                </p:dialog>
+            </h:form>
+        </ui:define>
+
+    </ui:composition>    
+</html>
+

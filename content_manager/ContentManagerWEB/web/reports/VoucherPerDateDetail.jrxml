@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="MovementServiceDetail" pageWidth="590" pageHeight="842" columnWidth="590" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="62ea3118-191a-467d-84a5-4fd605e4d9e6">
+	<property name="ireport.zoom" value="1.464100000000001"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="p_idcompany" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_refcustomer1" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_fromdate" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_todate" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_refdocnumber" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT 	V.REFCUSTOMER1 AS cuenta,
+	V.REFINVOICENUMBER AS FACTURA,
+	V.TOTALVOUCHER AS IMPORTE,
+	coalesce((SELECT IDNET FROM BILLING.VOUCHERNET  WHERE IDVOUCHER = V.IDVOUCHER AND IDCOMPANY = V.IDCOMPANY),0) AS RED,
+coalesce((SELECT descbox FROM BILLING.VOUCHERNET  WHERE IDVOUCHER = V.IDVOUCHER AND IDCOMPANY = V.IDCOMPANY),'') AS CAJA,
+coalesce((SELECT ticketnumber FROM BILLING.VOUCHERNET  WHERE IDVOUCHER = V.IDVOUCHER AND IDCOMPANY = V.IDCOMPANY),'') AS TICKET
+FROM BILLING.VOUCHER V
+WHERE V.ACTIVE IS TRUE
+AND V.IDCOMPANY = $P{p_idcompany}
+AND to_date(to_char(V.datemov,'dd/MM/yyyy'),'dd/MM/yyyy') BETWEEN $P{p_fromdate} AND $P{p_todate}
+AND ($P{p_refcustomer1} is null or V.REFCUSTOMER1 = $P{p_refcustomer1})
+AND ($P{p_refdocnumber} is null or V.REFDOCNUMBER = $P{p_refdocnumber})]]>
+	</queryString>
+	<field name="cuenta" class="java.lang.String"/>
+	<field name="factura" class="java.lang.String"/>
+	<field name="importe" class="java.math.BigDecimal"/>
+	<field name="red" class="java.lang.Integer"/>
+	<field name="caja" class="java.lang.String"/>
+	<field name="ticket" class="java.lang.String"/>
+	<variable name="TOTAL" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{importe}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="14" splitType="Stretch">
+			<staticText>
+				<reportElement x="84" y="3" width="58" height="10" uuid="9e917b72-43ae-4903-a4cd-652f127c1e1d"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nº FACTURA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="5" y="3" width="59" height="10" uuid="6af5fe38-0d07-44dc-a71a-9b030fe73178"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nº CUENTA]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="1" width="484" height="1" uuid="2bf2ae8e-c607-4f5f-bb61-1eb824902b42"/>
+			</line>
+			<line>
+				<reportElement x="0" y="13" width="484" height="1" uuid="a9beb103-c561-4323-87d1-56de2cd1aab6"/>
+			</line>
+			<staticText>
+				<reportElement x="168" y="3" width="23" height="10" uuid="fb023980-4bba-412a-b125-487ee2516823"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RED]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="200" y="3" width="41" height="10" uuid="67785bb9-782c-4849-b1c2-ece19e890f5c"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CAJA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="402" y="3" width="52" height="10" uuid="bec1dcb0-64f7-49a4-a4f5-4696e18e7f77"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[IMPORTE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="340" y="3" width="41" height="10" uuid="7d7a11ff-5df2-4fc6-8dc8-3051a2112a5a"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TICKET]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="12" splitType="Stretch">
+			<textField pattern="#,##0">
+				<reportElement x="402" y="2" width="74" height="10" uuid="e23065d4-7390-4df0-b7b5-1405b9da6c9e"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{importe}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="200" y="2" width="134" height="10" uuid="375e3ca7-8b88-4ee8-8deb-8389ea29578c"/>
+				<textElement textAlignment="Left">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{caja}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="168" y="2" width="23" height="10" uuid="e948c7c5-909f-4f56-a3c1-a68c16867aaf"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{red}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="5" y="2" width="75" height="10" uuid="bc4f55d9-658a-4ddd-a9b2-c1d736bbb08c"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cuenta}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="84" y="2" width="80" height="10" uuid="31050b7a-126e-49ef-8ccb-7fcdd48e428b"/>
+				<textElement textAlignment="Left">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{factura}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="340" y="2" width="56" height="10" uuid="67eab688-b426-46b0-9bda-2b82f3dfadc9"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ticket}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="13">
+			<staticText>
+				<reportElement x="5" y="3" width="54" height="10" uuid="55f201f1-2716-4c3b-b2e1-99bbb4eb149f"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="1" width="484" height="1" uuid="f7f2bae3-957b-49d0-b168-19523e8ded37"/>
+			</line>
+			<textField pattern="#,##0">
+				<reportElement x="402" y="3" width="74" height="10" uuid="cbb45341-98ab-4aa9-b5bc-9e219f38d8c1"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{TOTAL}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

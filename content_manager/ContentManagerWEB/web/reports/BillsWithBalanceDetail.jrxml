@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="MovementServiceDetail" pageWidth="555" pageHeight="842" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="62ea3118-191a-467d-84a5-4fd605e4d9e6">
+	<property name="ireport.zoom" value="2.1435888100000016"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="P_REFCUSTOMER1" class="java.lang.String"/>
+	<parameter name="p_idcompany" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_fromdate" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_todate" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT invoicenumber, 
+   	DATEEMI AS FECHA,
+	DATEDUE AS vencimiento, 
+	fees as cuotas,
+	(totinvoicegrav10 + totinvoicetax5 + totinvoiceexem) AS IMPORTE, 
+	totexpense AS MORA, (totpayinvoice + totpayexpense) AS PAGADO, 
+	((totinvoicegrav10 + totinvoicetax5 + totinvoiceexem +totexpense) - (totpayinvoice + totpayexpense)) AS SALDO
+FROM BILLING.INVOICE 
+WHERE ACTIVE IS TRUE
+and idcompany = $P{p_idcompany}
+and dateemi between $P{p_fromdate} and $P{p_todate}
+AND REFCUSTOMER1 LIKE $P{P_REFCUSTOMER1}
+AND ((totinvoicegrav10 + totinvoicetax5 + totinvoiceexem +totexpense) - (totpayinvoice + totpayexpense)) > 0
+ORDER BY DATEEMI]]>
+	</queryString>
+	<field name="invoicenumber" class="java.lang.String"/>
+	<field name="fecha" class="java.sql.Timestamp"/>
+	<field name="vencimiento" class="java.sql.Date"/>
+	<field name="cuotas" class="java.lang.Integer"/>
+	<field name="importe" class="java.math.BigDecimal"/>
+	<field name="mora" class="java.math.BigDecimal"/>
+	<field name="pagado" class="java.math.BigDecimal"/>
+	<field name="saldo" class="java.math.BigDecimal"/>
+	<variable name="SALDO_TOTAL" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{saldo}]]></variableExpression>
+	</variable>
+	<group name="collectors">
+		<groupExpression><![CDATA[$F{fecha}]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="12" splitType="Stretch">
+			<staticText>
+				<reportElement x="238" y="2" width="41" height="10" uuid="9e917b72-43ae-4903-a4cd-652f127c1e1d"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[IMPORTE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="95" y="2" width="40" height="10" uuid="6af5fe38-0d07-44dc-a71a-9b030fe73178"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[EMISION]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="0" width="525" height="1" uuid="2bf2ae8e-c607-4f5f-bb61-1eb824902b42"/>
+			</line>
+			<line>
+				<reportElement x="0" y="11" width="525" height="1" uuid="a9beb103-c561-4323-87d1-56de2cd1aab6"/>
+			</line>
+			<staticText>
+				<reportElement x="3" y="2" width="72" height="10" uuid="cbd10f47-b4fd-4718-bbce-8d0c5355f3e3"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nº FACTURA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="385" y="2" width="41" height="10" uuid="fb023980-4bba-412a-b125-487ee2516823"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PAGADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="455" y="2" width="41" height="10" uuid="67785bb9-782c-4849-b1c2-ece19e890f5c"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SALDO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="313" y="2" width="41" height="10" uuid="bec1dcb0-64f7-49a4-a4f5-4696e18e7f77"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MORA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="146" y="2" width="40" height="10" uuid="afb634f3-b9f6-4262-9016-43b9a61ca219"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VENCTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="198" y="2" width="37" height="10" uuid="27a75955-6d2c-481b-8dcd-9aff386a69c0"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CUOTAS]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="12" splitType="Stretch">
+			<textField pattern="#,##0">
+				<reportElement x="313" y="2" width="60" height="10" uuid="e23065d4-7390-4df0-b7b5-1405b9da6c9e"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{mora}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="455" y="2" width="60" height="10" uuid="375e3ca7-8b88-4ee8-8deb-8389ea29578c"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{saldo}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="238" y="2" width="60" height="10" uuid="31050b7a-126e-49ef-8ccb-7fcdd48e428b"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{importe}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="3" y="2" width="82" height="10" uuid="3d6caf1d-cf69-4674-9353-9f1e6d3bd3c0"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{invoicenumber}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="385" y="2" width="60" height="10" uuid="e948c7c5-909f-4f56-a3c1-a68c16867aaf"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{pagado}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="95" y="2" width="48" height="10" uuid="bc4f55d9-658a-4ddd-a9b2-c1d736bbb08c"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="146" y="2" width="48" height="10" uuid="9e2b20b8-dc14-4e68-a61a-c4ae2315ece2"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{vencimiento}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="199" y="2" width="36" height="10" uuid="62c35c8b-00df-4a65-aba9-e73c44587f6f"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cuotas}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="11">
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="455" y="1" width="60" height="10" uuid="bfdf196e-7dd9-4f49-b7d8-43e00ef511ae"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{SALDO_TOTAL}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="0" width="525" height="1" uuid="2fa4ff4c-caa5-4996-9f67-00f2314cb452"/>
+			</line>
+			<staticText>
+				<reportElement x="3" y="1" width="57" height="10" uuid="4a4a595d-878f-42fe-ad36-4177fb9147b7"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SALDO TOTAL]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

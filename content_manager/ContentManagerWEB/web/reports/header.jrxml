@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="79c5f1c7-18ab-4168-b2ad-42a67c26ee48">
+	<property name="ireport.zoom" value="1.4641000000000006"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<title>
+		<band height="29" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="16" width="229" height="12" uuid="945eaaed-e42a-4bdc-8b37-c41e086194cb"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Avda. General Santos N° 698 c/ Rca. de Siria ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="159" height="16" uuid="74ac7235-a031-470e-a115-1117669b328a"/>
+				<textElement>
+					<font size="12" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[DOCUMENTA S.A.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="459" y="5" width="28" height="10" uuid="1677a7eb-3111-492f-bc63-4f7bc0a078e2"/>
+				<textElement>
+					<font size="6" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[FECHA:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="487" y="5" width="49" height="10" uuid="ff5471b6-66af-4208-aa06-4ca9dafd1caf"/>
+				<textElement>
+					<font size="6" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="459" y="16" width="28" height="10" uuid="1dc828d7-c115-49e2-8b71-8d0b9b4699c3"/>
+				<textElement>
+					<font size="6" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[HORA:]]></text>
+			</staticText>
+			<textField pattern="HH:mm:ss">
+				<reportElement x="487" y="16" width="49" height="10" uuid="817ded79-a530-42d2-835f-b107adea143c"/>
+				<textElement>
+					<font size="6" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+</jasperReport>

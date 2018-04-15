@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html lang="es-ES"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition  template="/WEB-INF/facelets/template/mainTemplate2.xhtml"> 
+        <ui:define name="content">
+            <ui:define name="header">
+                <f:metadata>
+                    <f:viewParam name="status" value="#{indexUserMB.status}"/>
+                </f:metadata>
+            </ui:define>
+            <section id="main" style="width: 100%; margin-top: 94px;height: auto;min-height: 100% !important;">
+                <section id="menu">
+                    <h:form>
+                        <p:growl id="messages"
+                                 showDetail="true"
+                                 showSummary="true"
+                                 autoUpdate="true"/>
+                        <p:menubar>
+                            <p:menuitem value="Inicio" />
+                            <p:submenu label="Insertar" icon="fa fa-plus">
+                                <p:menuitem value="Dispositivos" 
+                                            icon="fa fa-angle-right" 
+                                            url="/restricted/content/crudDevice.tcc"/>
+                                <p:menuitem value="Contenidos" 
+                                            icon="fa fa-cloud-upload" 
+                                            url="/restricted/upload/fileUpload.tcc"/>
+                            </p:submenu>
+                            <p:submenu label="Reportes" icon="fa fa-line-chart">
+                                <p:menuitem value="Audiencias por sitio" 
+                                            icon="fa fa-angle-right" 
+                                            />
+                                <p:menuitem value="Audiencias" 
+                                            icon="fa fa-calendar" 
+                                            url="/restricted/reports/audienceReport.tcc"/>
+                            </p:submenu>
+                            <p:submenu label="Administrar" icon="fa fa-wrench" >
+                                <p:menuitem value="Accesos" 
+                                            icon="fa fa-sign-in" 
+                                            url="/restricted/admin/accessManagement.tcc"/>
+                            </p:submenu>
+                            <p:submenu label="Usuario" icon="fa fa-user" >
+                                <p:menuitem value="Cambiar contraseña" 
+                                            icon="fa fa-key" 
+                                            url="/restricted/auth/changePassword.tcc"/>
+                            </p:submenu>
+                        </p:menubar>
+                    </h:form>
+                </section>
+                <section id="content-sentinela">
+                    <ui:insert name="content-center">
+                    </ui:insert>
+                </section>
+            </section>
+        </ui:define>
+    </ui:composition>
+</html>

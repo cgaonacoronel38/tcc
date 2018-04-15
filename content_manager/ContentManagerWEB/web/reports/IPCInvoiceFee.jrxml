@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="f6f06657-cf31-40a9-b411-2f61a2bff785">
+	<property name="ireport.zoom" value="1.6105100000000008"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["/home/tokio/proyectos/dcors/GDMWEB/web/reports/"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_idinvoice" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_idcompany" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT 	idinvoice,
+	idcompany,
+	feenumber,
+	datedue,
+	lastfeepay, 
+	(amountfee + amountexpense) as amountfee,
+	totpayamountexpense, 
+	totpayamountfee,
+	(totpayamountexpense + totpayamountfee) as totpayment,
+	((amountfee + amountexpense) - (totpayamountexpense + totpayamountfee)) AS balance
+FROM billing.invoicefee 
+where idinvoice =  $P{p_idinvoice}
+and idcompany =  $P{p_idcompany}
+and active is true;]]>
+	</queryString>
+	<field name="idinvoice" class="java.lang.Long"/>
+	<field name="idcompany" class="java.lang.Integer"/>
+	<field name="feenumber" class="java.lang.Integer"/>
+	<field name="datedue" class="java.sql.Date">
+		<fieldDescription><![CDATA[Fecha de vencimiento.]]></fieldDescription>
+	</field>
+	<field name="lastfeepay" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[Fecha de último pago.]]></fieldDescription>
+	</field>
+	<field name="amountfee" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Importe de cuota.]]></fieldDescription>
+	</field>
+	<field name="totpayamountexpense" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Total pagado en concepto de gastos en la cuota (mora + iva mora + otros).]]></fieldDescription>
+	</field>
+	<field name="totpayamountfee" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Importe de cuota pagado.]]></fieldDescription>
+	</field>
+	<field name="totpayment" class="java.math.BigDecimal"/>
+	<field name="balance" class="java.math.BigDecimal"/>
+	<variable name="totalAmount" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{amountfee}]]></variableExpression>
+	</variable>
+	<variable name="totalPayment" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{totpayment}]]></variableExpression>
+	</variable>
+	<variable name="totbalance" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{balance}]]></variableExpression>
+	</variable>
+	<columnHeader>
+		<band height="18" splitType="Stretch">
+			<staticText>
+				<reportElement x="3" y="4" width="36" height="12" uuid="8f68d858-a885-4e78-890e-5d48abcbba51"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CUOTA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="41" y="4" width="64" height="12" uuid="66e6adb2-3fcf-4276-a3ea-236c9b5a03ba"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VENCT.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="105" y="4" width="63" height="12" uuid="6e8f944b-b7c4-46d5-b76d-07ad6895239a"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ULT. PAGO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="172" y="4" width="66" height="12" uuid="e8f6487f-fd55-4765-b0a3-e2b71b0d6fa5"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[IMPORTE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="242" y="4" width="70" height="12" uuid="6a5e230e-73af-468c-9e79-caa18baefd67"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PAGO CUOTA]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="1" width="526" height="1" uuid="025f6512-27c2-4a8f-8673-1ba3ea74f1c8"/>
+			</line>
+			<line>
+				<reportElement x="0" y="17" width="526" height="1" uuid="3ef40ad8-3702-47be-b99f-6fecb95d5cf4"/>
+			</line>
+			<staticText>
+				<reportElement x="312" y="4" width="66" height="12" uuid="9ee265d7-285e-4bda-a4e6-dc4831ffc8b3"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PAGO MORA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="382" y="4" width="66" height="12" uuid="85d2fd9b-3405-4055-8bb6-43048d970a6a"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PAGADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="452" y="4" width="66" height="12" uuid="a6008783-608b-4e98-a79d-c19223bcd136"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SALDO]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<rectangle>
+				<reportElement isPrintRepeatedValues="false" x="0" y="0" width="526" height="15" forecolor="#FEFEFE" backcolor="#D7D7D7" uuid="12d4d079-3b3b-428c-ac2a-fe4aa06d2a1f">
+					<printWhenExpression><![CDATA[new Boolean( $V{PAGE_COUNT}.intValue() % 2 ==0 )]]></printWhenExpression>
+				</reportElement>
+			</rectangle>
+			<textField>
+				<reportElement x="3" y="2" width="34" height="12" uuid="3b6c5fa2-bd9d-491c-ba7a-bc28e26617ef"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{feenumber}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="41" y="2" width="64" height="12" uuid="3c5bca39-adaa-44a3-b909-ed3cf680d515"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{datedue}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="105" y="2" width="63" height="12" uuid="8e8cee5a-9829-4433-aa36-8bf84b685886"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{lastfeepay}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="172" y="2" width="66" height="12" uuid="d688e6d2-b350-4532-8cbb-c7876b3fc87d"/>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{amountfee}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="242" y="2" width="66" height="12" uuid="9da11ebb-7a85-4b80-99ec-a8100b4850c5"/>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{totpayamountfee}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement x="38" y="14" width="304" height="1" uuid="20980d3b-a6b2-42f5-991d-b60768cf5c3f"/>
+				<subreportParameter name="p_idinvoice">
+					<subreportParameterExpression><![CDATA[$F{idinvoice}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_idcompany">
+					<subreportParameterExpression><![CDATA[$F{idcompany}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_feenumber">
+					<subreportParameterExpression><![CDATA[$F{feenumber}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "IPCExpense.jasper"]]></subreportExpression>
+			</subreport>
+			<textField pattern="#,##0">
+				<reportElement x="312" y="2" width="66" height="12" uuid="45725a52-939c-4379-8b59-127e43fcba70"/>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{totpayamountexpense}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="382" y="2" width="66" height="12" uuid="dd05224a-b594-43e1-b0a5-eeb1b46f3bdd"/>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{totpayment}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="452" y="2" width="66" height="12" uuid="4a17fce2-d1c4-4154-a65e-77a848131770"/>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{balance}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="20" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="1" width="526" height="1" uuid="82540266-276d-4a28-93ad-7279b1bbb7ed"/>
+			</line>
+			<staticText>
+				<reportElement x="3" y="3" width="75" height="12" uuid="56cb782e-38b1-4aa9-ae11-043541d38d60"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTALES:]]></text>
+			</staticText>
+			<textField pattern="#,##0">
+				<reportElement x="172" y="3" width="66" height="12" uuid="f7282726-f1b1-4538-a8b7-7777453e6e8d"/>
+				<textElement textAlignment="Right">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{totalAmount}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="382" y="3" width="66" height="12" uuid="088d770f-28b1-41ea-9868-f351e6889578"/>
+				<textElement textAlignment="Right">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{totalPayment}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="452" y="3" width="66" height="12" uuid="b9dd3d0f-365a-4c66-9e06-77ae7bcfa60a"/>
+				<textElement textAlignment="Right">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{totbalance}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

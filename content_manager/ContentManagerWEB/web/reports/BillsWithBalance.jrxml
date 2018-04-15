@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="MovementService" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="541" leftMargin="34" rightMargin="20" topMargin="20" bottomMargin="20" uuid="03121dc5-3c53-4cfe-9441-fdbed544b822">
+	<property name="ireport.zoom" value="1.4641000000000006"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["/home/tokio/proyectos/dcors/GDMWEB/web/reports/"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_idcompany" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_fromdate" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_todate" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_refcustomer1" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_refdocnumber" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_company" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT DISTINCT refcustomer1, 
+		refdocnumber,
+		fullname
+FROM BILLING.INVOICE 
+WHERE ACTIVE IS TRUE
+and idcompany = $P{p_idcompany}
+and dateemi between $P{p_fromdate} and $P{p_todate}
+and ($P{p_refcustomer1} is null or refcustomer1 = $P{p_refcustomer1})
+and ($P{p_refdocnumber} is null or refdocnumber = $P{p_refdocnumber})
+and ((totinvoicegrav10 + totinvoicetax5 + totinvoiceexem + totexpense) - (totpayinvoice + totpayexpense)) > 0 
+ORDER BY fullname]]>
+	</queryString>
+	<field name="refcustomer1" class="java.lang.String"/>
+	<field name="refdocnumber" class="java.lang.String"/>
+	<field name="fullname" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="31" splitType="Stretch">
+			<subreport>
+				<reportElement x="0" y="0" width="541" height="31" uuid="b42b9e95-dff1-4a41-92ae-aa80c3e15946"/>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "header.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="18" splitType="Stretch">
+			<staticText>
+				<reportElement x="454" y="3" width="30" height="10" uuid="4b92f8cc-f8a5-4a98-9296-62340a25477e"/>
+				<textElement>
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PAGINA:]]></text>
+			</staticText>
+			<textField evaluationTime="Report">
+				<reportElement x="503" y="3" width="35" height="10" uuid="95ef957a-a9ae-466a-834d-4228f8f8dbb6"/>
+				<textElement>
+					<font size="6" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="468" y="3" width="35" height="10" uuid="4d2bd7f0-7d7f-4d97-b22f-e767e3b6ccb9"/>
+				<textElement textAlignment="Right">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="3" width="54" height="12" uuid="d52f5ae6-7eb4-4665-bc36-d27e9d564b9f"/>
+				<textElement>
+					<font size="9" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Compañía:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="178" y="1" width="182" height="14" uuid="ba314bd1-037f-4235-ac42-bf2064bd8a7f"/>
+				<textElement textAlignment="Center">
+					<font size="11" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[FACTURAS CON SALDOS]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="54" y="3" width="100" height="12" uuid="f5b50c38-4ea5-4c37-b1e5-276481077184"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{p_company}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="31" splitType="Stretch">
+			<textField>
+				<reportElement x="291" y="12" width="129" height="12" uuid="e9c9d47b-2a25-431b-bdc3-2a6566809c70"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{refcustomer1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="113" y="0" width="428" height="12" uuid="67592f99-7367-4e8e-8f9e-d61a2aca6c67"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fullname}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="0" width="113" height="12" uuid="3981add4-acc9-472a-9554-7ac157bf4d12"/>
+				<textElement>
+					<font size="9" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[NOMBRE Y APELLIDO:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="88" y="12" width="133" height="12" uuid="e46ee04b-b2c7-4bbe-a031-90aac0e6b5de"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{refdocnumber}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="12" width="85" height="12" uuid="fd224a15-56fc-420c-beb0-33b38790cabc"/>
+				<textElement>
+					<font size="9" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Nº DOCUMENTO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="229" y="12" width="62" height="12" uuid="bc56f8c1-64fd-43f7-b942-0c8bf2bb3ac7"/>
+				<textElement>
+					<font size="9" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Nº CUENTA:]]></text>
+			</staticText>
+			<subreport>
+				<reportElement x="11" y="24" width="511" height="1" uuid="0c127e5f-c39e-41d1-9f2f-846055c128f5"/>
+				<subreportParameter name="P_REFCUSTOMER1">
+					<subreportParameterExpression><![CDATA[$F{refcustomer1}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_idcompany">
+					<subreportParameterExpression><![CDATA[$P{p_idcompany}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_fromdate">
+					<subreportParameterExpression><![CDATA[$P{p_fromdate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_todate">
+					<subreportParameterExpression><![CDATA[$P{p_todate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "BillsWithBalanceDetail.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<summary>
+		<band height="22">
+			<subreport>
+				<reportElement x="0" y="0" width="535" height="22" uuid="f76fa6b9-3c34-4b48-9f4b-025f1738f776"/>
+				<subreportParameter name="p_idcompany">
+					<subreportParameterExpression><![CDATA[$P{p_idcompany}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_fromdate">
+					<subreportParameterExpression><![CDATA[$P{p_fromdate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_todate">
+					<subreportParameterExpression><![CDATA[$P{p_todate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_refcustomer1">
+					<subreportParameterExpression><![CDATA[$P{p_refcustomer1}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_refdocnumber">
+					<subreportParameterExpression><![CDATA[$P{p_refdocnumber}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "BillsWithBalanceSummary.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</summary>
+	<noData>
+		<band height="128">
+			<staticText>
+				<reportElement x="159" y="60" width="236" height="15" uuid="93b78838-f2ab-4d03-a521-16356dcdd431"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[REGISTROS NO ENCONTRADOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="159" y="79" width="236" height="36" uuid="82b5e596-b568-4ec5-8217-bd3df8571536"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true" isItalic="false"/>
+					<paragraph lineSpacing="1_1_2"/>
+				</textElement>
+				<text><![CDATA[NO SE HAN ENCONTRADO REGISTROS PARA LOS
+PARÁMETROS INSERTADOS]]></text>
+			</staticText>
+		</band>
+	</noData>
+</jasperReport>

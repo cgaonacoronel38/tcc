@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="152" pageHeight="555" orientation="Landscape" columnWidth="152" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="d106f58a-1a07-4efd-bc72-56c372eead70">
+	<property name="ireport.zoom" value="1.4641000000000006"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="p_year" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_typecycle" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_month" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT (case when monthcycle < 10 then ('10-0' || monthcycle) else ('10-' ||monthcycle) end) || '-' || substr(yearcycle::TEXT, 3, 2) as ciclo,
+	dateexpiration as vencimiento,
+	dateclosing as fecha,
+	dateclosingprocess as cierre_documenta
+  FROM billing.periods
+  where yearcycle = $P{p_year} and typecycle = $P{p_typecycle} and monthcycle = $P{p_month};]]>
+	</queryString>
+	<field name="ciclo" class="java.lang.String"/>
+	<field name="vencimiento" class="java.sql.Date"/>
+	<field name="fecha" class="java.sql.Date"/>
+	<field name="cierre_documenta" class="java.sql.Timestamp"/>
+	<detail>
+		<band height="104" splitType="Stretch">
+			<staticText>
+				<reportElement x="25" y="10" width="43" height="20" uuid="efa52e3a-9522-4fd5-b9c2-e456ac569bb0"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CICLO]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="68" y="10" width="75" height="20" uuid="61f32e6a-2adb-4295-a854-03d1478daf09"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ciclo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="12" y="30" width="34" height="20" uuid="c65e5c1c-b3f9-4b23-be35-f502061b5b86"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Venc:]]></text>
+			</staticText>
+			<textField pattern="EEEEE dd/MM/yy" isBlankWhenNull="true">
+				<reportElement x="46" y="30" width="100" height="20" uuid="9e252edf-fdfb-49b3-8495-a56ca23f0f2d"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{vencimiento}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="4" y="70" width="137" height="12" forecolor="#FF0000" uuid="1fef059c-108f-4783-a52b-2ba0a2a7738b"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Cierre documenta:]]></text>
+			</staticText>
+			<textField pattern="MMMMM dd" isBlankWhenNull="true">
+				<reportElement x="23" y="50" width="100" height="20" forecolor="#000000" uuid="093b76d3-75c8-4c07-b74c-3b6f400a68a9"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{fecha}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd/MM/yy" isBlankWhenNull="true">
+				<reportElement x="4" y="82" width="137" height="20" forecolor="#FF0000" uuid="131da8b7-bc7c-4559-9858-fc7a6d11edbc"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{cierre_documenta}]]></textFieldExpression>
+			</textField>
+			<rectangle radius="10">
+				<reportElement mode="Transparent" x="1" y="1" width="150" height="101" uuid="ac9cdec5-9d41-4745-b672-bd44b8fcee83"/>
+			</rectangle>
+		</band>
+	</detail>
+</jasperReport>

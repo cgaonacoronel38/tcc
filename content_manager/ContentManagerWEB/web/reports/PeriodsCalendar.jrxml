@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="86a4d091-4999-4b85-9d27-205cc425f6ef">
+	<property name="ireport.zoom" value="1.4641000000000017"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="507"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["/home/tokio/proyectos/dcors/GDMWEB/web/reports/"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_year" class="java.lang.Integer"/>
+	<parameter name="p_cycle" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[select current_date]]>
+	</queryString>
+	<field name="date" class="java.sql.Date"/>
+	<variable name="enero" class="java.lang.Integer">
+		<variableExpression><![CDATA[1]]></variableExpression>
+		<initialValueExpression><![CDATA[1]]></initialValueExpression>
+	</variable>
+	<variable name="ciclo" class="java.lang.Integer">
+		<variableExpression><![CDATA[2]]></variableExpression>
+		<initialValueExpression><![CDATA[2]]></initialValueExpression>
+	</variable>
+	<variable name="year" class="java.lang.Integer">
+		<variableExpression><![CDATA[2016]]></variableExpression>
+		<initialValueExpression><![CDATA[2016]]></initialValueExpression>
+	</variable>
+	<variable name="febrero" class="java.lang.Integer">
+		<variableExpression><![CDATA[2]]></variableExpression>
+		<initialValueExpression><![CDATA[2]]></initialValueExpression>
+	</variable>
+	<variable name="marzo" class="java.lang.Integer">
+		<variableExpression><![CDATA[3]]></variableExpression>
+		<initialValueExpression><![CDATA[3]]></initialValueExpression>
+	</variable>
+	<variable name="abril" class="java.lang.Integer">
+		<variableExpression><![CDATA[4]]></variableExpression>
+		<initialValueExpression><![CDATA[4]]></initialValueExpression>
+	</variable>
+	<variable name="mayo" class="java.lang.Integer">
+		<variableExpression><![CDATA[5]]></variableExpression>
+		<initialValueExpression><![CDATA[5]]></initialValueExpression>
+	</variable>
+	<variable name="junio" class="java.lang.Integer">
+		<variableExpression><![CDATA[6]]></variableExpression>
+		<initialValueExpression><![CDATA[6]]></initialValueExpression>
+	</variable>
+	<variable name="julio" class="java.lang.Integer">
+		<variableExpression><![CDATA[7]]></variableExpression>
+	</variable>
+	<variable name="agosto" class="java.lang.Integer">
+		<variableExpression><![CDATA[8]]></variableExpression>
+	</variable>
+	<variable name="septiembre" class="java.lang.Integer">
+		<variableExpression><![CDATA[9]]></variableExpression>
+		<initialValueExpression><![CDATA[9]]></initialValueExpression>
+	</variable>
+	<variable name="octubre" class="java.lang.Integer">
+		<variableExpression><![CDATA[10]]></variableExpression>
+	</variable>
+	<variable name="noviembre" class="java.lang.Integer">
+		<variableExpression><![CDATA[11]]></variableExpression>
+	</variable>
+	<variable name="diciembre" class="java.lang.Integer">
+		<variableExpression><![CDATA[12]]></variableExpression>
+		<initialValueExpression><![CDATA[12]]></initialValueExpression>
+	</variable>
+	<title>
+		<band height="40" splitType="Stretch">
+			<staticText>
+				<reportElement x="25" y="20" width="159" height="12" uuid="ef34c6d3-6848-4e33-a3a3-02d7c9cdce4b"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Avda. General Santos N° 698 c/ Rca. de Siria ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="25" y="4" width="159" height="16" uuid="edd39b00-09f0-402d-bcaf-395143c346bf"/>
+				<textElement>
+					<font size="12" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[DOCUMENTA S.A.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="190" y="4" width="205" height="16" uuid="743aaff6-bfa9-4801-9721-b79a73d31f03"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Calendario de cierres HolaPY]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="281" y="20" width="72" height="20" uuid="683b5fb1-7a8a-47d9-aed6-565a4d6f5e33"/>
+				<textElement textAlignment="Left">
+					<font isBold="true" isItalic="false" isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{p_cycle} == 2 ? "10" +" "+$P{p_year} : "20" +" "+$P{p_year}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="243" y="20" width="38" height="20" uuid="6756b8dc-63a6-4790-9e10-cf45dd49f439"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CICLO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="461" y="15" width="28" height="10" uuid="9f1dd21e-872a-4851-9287-8ecd0bbb6703"/>
+				<textElement>
+					<font size="6" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[HORA:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="489" y="4" width="49" height="10" uuid="2d7a6c30-f3fa-4f89-a3c3-40647d128c06"/>
+				<textElement>
+					<font size="6" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField pattern="HH:mm:ss">
+				<reportElement x="489" y="15" width="49" height="10" uuid="82417ef3-c22a-4897-862e-4b7046f00477"/>
+				<textElement>
+					<font size="6" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="461" y="4" width="28" height="10" uuid="4a372a2f-e9b8-48ff-b902-009727df05b3"/>
+				<textElement>
+					<font size="6" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[FECHA:]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="445" splitType="Stretch">
+			<subreport>
+				<reportElement x="25" y="1" width="165" height="100" uuid="5e6114c5-7350-492f-9dff-2972cd1d1f9b"/>
+				<subreportParameter name="p_year">
+					<subreportParameterExpression><![CDATA[$P{p_year}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_typecycle">
+					<subreportParameterExpression><![CDATA[$P{p_cycle}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_month">
+					<subreportParameterExpression><![CDATA[$V{enero}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "PeriodsDetail.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement x="204" y="1" width="161" height="100" uuid="c3eca137-01ac-4afa-a0ed-eb6b56772a1b"/>
+				<subreportParameter name="p_year">
+					<subreportParameterExpression><![CDATA[$P{p_year}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_typecycle">
+					<subreportParameterExpression><![CDATA[$P{p_cycle}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_month">
+					<subreportParameterExpression><![CDATA[$V{febrero}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "PeriodsDetail.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement x="380" y="1" width="163" height="100" uuid="c5280d57-2153-448f-b9e9-dd977cf80eb0"/>
+				<subreportParameter name="p_year">
+					<subreportParameterExpression><![CDATA[$P{p_year}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_typecycle">
+					<subreportParameterExpression><![CDATA[$P{p_cycle}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_month">
+					<subreportParameterExpression><![CDATA[$V{marzo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "PeriodsDetail.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement x="25" y="110" width="165" height="100" uuid="4350ac40-a156-48cd-8290-ad2f50e60b6c"/>
+				<subreportParameter name="p_year">
+					<subreportParameterExpression><![CDATA[$P{p_year}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_typecycle">
+					<subreportParameterExpression><![CDATA[$P{p_cycle}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_month">
+					<subreportParameterExpression><![CDATA[$V{abril}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "PeriodsDetail.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement x="204" y="110" width="162" height="100" uuid="cea297bd-955d-4767-ad06-f77d47a48007"/>
+				<subreportParameter name="p_typecycle">
+					<subreportParameterExpression><![CDATA[$P{p_cycle}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_month">
+					<subreportParameterExpression><![CDATA[$V{mayo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_year">
+					<subreportParameterExpression><![CDATA[$P{p_year}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "PeriodsDetail.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement x="380" y="110" width="164" height="100" uuid="b1491556-51db-4331-9cfa-a57f8a857ec4"/>
+				<subreportParameter name="p_typecycle">
+					<subreportParameterExpression><![CDATA[$P{p_cycle}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_month">
+					<subreportParameterExpression><![CDATA[$V{junio}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_year">
+					<subreportParameterExpression><![CDATA[$P{p_year}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "PeriodsDetail.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement x="25" y="220" width="165" height="100" uuid="2b6fa0bf-e529-4102-b846-8cb23118b92d"/>
+				<subreportParameter name="p_year">
+					<subreportParameterExpression><![CDATA[$P{p_year}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_typecycle">
+					<subreportParameterExpression><![CDATA[$P{p_cycle}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_month">
+					<subreportParameterExpression><![CDATA[$V{julio}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "PeriodsDetail.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement x="204" y="220" width="163" height="100" uuid="90bcc824-80f8-431f-a313-49d9012a3b58"/>
+				<subreportParameter name="p_year">
+					<subreportParameterExpression><![CDATA[$P{p_year}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_typecycle">
+					<subreportParameterExpression><![CDATA[$P{p_cycle}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_month">
+					<subreportParameterExpression><![CDATA[$V{agosto}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "PeriodsDetail.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement x="380" y="220" width="164" height="100" uuid="604f896a-535e-4b4d-bab0-c925f4f86bd3"/>
+				<subreportParameter name="p_year">
+					<subreportParameterExpression><![CDATA[$P{p_year}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_typecycle">
+					<subreportParameterExpression><![CDATA[$P{p_cycle}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_month">
+					<subreportParameterExpression><![CDATA[$V{septiembre}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "PeriodsDetail.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement x="25" y="330" width="166" height="100" uuid="17dd6cda-c450-4bfe-8598-6783bb406a91"/>
+				<subreportParameter name="p_year">
+					<subreportParameterExpression><![CDATA[$P{p_year}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_typecycle">
+					<subreportParameterExpression><![CDATA[$P{p_cycle}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_month">
+					<subreportParameterExpression><![CDATA[$V{octubre}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "PeriodsDetail.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement x="204" y="330" width="163" height="100" uuid="b6e6d353-00f3-44a7-b78d-2b6055c0183f"/>
+				<subreportParameter name="p_year">
+					<subreportParameterExpression><![CDATA[$P{p_year}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_typecycle">
+					<subreportParameterExpression><![CDATA[$P{p_cycle}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_month">
+					<subreportParameterExpression><![CDATA[$V{noviembre}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "PeriodsDetail.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement x="380" y="330" width="166" height="100" uuid="20adb5f9-6ffa-4e93-bc0b-ebc471b10791"/>
+				<subreportParameter name="p_year">
+					<subreportParameterExpression><![CDATA[$P{p_year}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_typecycle">
+					<subreportParameterExpression><![CDATA[$P{p_cycle}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_month">
+					<subreportParameterExpression><![CDATA[$V{diciembre}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "PeriodsDetail.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="20">
+			<textField>
+				<reportElement x="10" y="0" width="80" height="14" uuid="c706bc9e-9648-453f-9471-37e18bcf8af6"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de "]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="90" y="0" width="40" height="14" uuid="919074b6-6508-4d6d-8ee8-02ede23abca5"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

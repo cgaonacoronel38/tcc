@@ -1,0 +1,202 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html lang="es-ES"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition  template="/WEB-INF/facelets/template/gdm.xhtml"> 
+        <ui:define name="content-center">
+            <h:form id="form" style="height: 880px;">
+                <p:growl id="growl" showDetail="true" autoUpdate="true"/>
+                <p:tabView>
+                    <p:tab title="Dispositivos">
+                        <p:accordionPanel>
+                            <p:ajax event="tabChange" listener="#{crudDevice.updDeviceList()}" update="@([id$=dtDevice])" />
+                            <p:tab title="Agregar dispositivo">
+                                <h:panelGrid columns="2" cellpadding="5" cellspacing="5" id="pgCreateDevice">
+                                    <p:outputLabel value="Nombre"/>
+                                    <p:inputText value="#{crudDevice.newDevice.name}" />
+                                    
+                                    <p:outputLabel value="Descripcion"/>
+                                    <p:inputText value="#{crudDevice.newDevice.description}" />
+                                    
+                                    <p:outputLabel value="Localidad"/>
+                                    <p:selectOneMenu id="somLocation" 
+                                                     value="#{crudDevice.selectedLocation.idLocation}" 
+                                                     filter="true" 
+                                                     filterMatchMode="startsWith"
+                                                     effect="fade" >
+                                        <f:selectItem itemLabel="SELECCIONE LOCALIDAD" itemValue="" noSelectionOption="true" />
+                                        <f:selectItems value="#{crudDevice.listLocation}" var="lc" itemLabel="#{lc.name}" itemValue="#{lc.idLocation}" />
+                                    </p:selectOneMenu>
+                                </h:panelGrid>
+                                <p:commandButton id="btnQuery" value="Aceptar"  action="#{crudDevice.createDevice()}" update="@([id$=growl]) @([id$=pgCreateDevice])"/>
+                            </p:tab>
+                            <p:tab title="Listado de dispositivos">
+                                <p:dataTable id="dtDevice"
+                                             rowIndexVar="indexVar"
+                                             var="de"
+                                             value="#{crudDevice.listDevice}"
+                                             paginator="true"
+                                             rows="10">
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Nombre" />
+                                        </f:facet>
+                                        <h:outputText value="#{de.name}" />
+                                    </p:column>
+                                    
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Localidad" />
+                                        </f:facet>
+                                        <h:outputText value="#{de.idLocation.name}" />
+                                    </p:column>
+                                </p:dataTable>
+                            </p:tab>
+                        </p:accordionPanel>
+                    </p:tab>
+                    <p:tab title="Localidades">
+                        <p:accordionPanel>
+                            <p:ajax event="tabChange" listener="#{crudDevice.updLocationList()}" update="@([id$=dtLocation])" />
+                            <p:tab title="Agregar Localidad">
+                                <h:panelGrid columns="3" cellpadding="10" cellspacing="5" id="pgCreateLocation">
+                                    <p:outputLabel value="Nombre"/>
+                                    <p:inputText value="#{crudDevice.newLocation.name}" />
+                                    <h:panelGrid />
+
+                                    <p:outputLabel value="Descripcion"/>
+                                    <p:inputTextarea value="#{crudDevice.newLocation.location}" />
+                                    <h:panelGrid />
+
+                                    <p:outputLabel value="País"/>
+                                    <p:selectOneMenu id="somCountry" 
+                                                     value="#{crudDevice.selectedCountryl.idCountry}" 
+                                                     filter="true" 
+                                                     filterMatchMode="startsWith"
+                                                     effect="fade" >
+                                        <p:ajax listener="#{crudDevice.updCityList()}" update="@([id$=somCity])" />
+                                        <f:selectItem itemLabel="SELECCIONE PAIS" itemValue="" noSelectionOption="true" />
+                                        <f:selectItems value="#{crudDevice.listCountry}" var="co" itemLabel="#{co.description}" itemValue="#{co.idCountry}" />
+                                    </p:selectOneMenu>
+                                    <h:panelGrid columns="2">
+                                        <p:commandButton update="@([id$=dlgCountry])"
+                                                         style="margin-left: 15px;"
+                                                         id="btnDlgCountry"
+                                                         oncomplete="PF('wvCountry').show()"
+                                                         icon="fa fa-plus" />
+                                        <p:tooltip value="Insertar País" for="@([id$=btnDlgCountry])" />
+                                    </h:panelGrid>
+
+                                    <p:outputLabel value="Ciudad"/>
+                                    <p:selectOneMenu id="somCity" 
+                                                     value="#{crudDevice.selectedCity.idCity}" 
+                                                     filter="true" 
+                                                     filterMatchMode="startsWith"
+                                                     effect="fade" >
+                                        <f:selectItem itemLabel="SELECCIONE CIUDAD" itemValue="" noSelectionOption="true" />
+                                        <f:selectItems value="#{crudDevice.listCity}" var="ci" itemLabel="#{ci.description}" itemValue="#{ci.idCity}" />
+                                    </p:selectOneMenu>
+                                    <h:panelGrid columns="2">
+                                        <p:commandButton update="@([id$=dlgCity])"
+                                                         style="margin-left: 15px;"
+                                                         id="btnDlgCity"
+                                                         oncomplete="PF('wvCity').show()"
+                                                         icon="fa fa-plus" />
+                                        <p:tooltip value="Insertar Ciudad" for="@([id$=btnDlgCity])" />
+                                    </h:panelGrid>
+                                    
+                                    <p:outputLabel value="Latitud"/>
+                                    <p:inputText value="#{crudDevice.newLocation.latitude}" />
+                                    <h:panelGrid />
+                                    
+                                    <p:outputLabel value="Longitud"/>
+                                    <p:inputText value="#{crudDevice.newLocation.longitude}" />
+                                    <h:panelGrid />
+                                </h:panelGrid>
+                                <p:commandButton id="btnCreateLocate" 
+                                                 value="Aceptar"  
+                                                 action="#{crudDevice.createLocation()}" 
+                                                 update="@([id$=growl]) @([id$=pgCreateLocation])"/>
+                            </p:tab>
+                            <p:tab title="Listado de localidades">
+                                <p:dataTable id="dtLocation"
+                                             rowIndexVar="indexVar"
+                                             var="de"
+                                             value="#{crudDevice.listLocation}"
+                                             paginator="true"
+                                             rows="10">
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Nombre" />
+                                        </f:facet>
+                                        <h:outputText value="#{de.name}" />
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Descripcion" />
+                                        </f:facet>
+                                        <h:outputText value="#{de.location}" />
+                                    </p:column>
+                                </p:dataTable>
+                            </p:tab>
+                        </p:accordionPanel>
+                    </p:tab>
+                </p:tabView>
+
+                <p:dialog header="Agregar País"
+                          id="dlgCountry"
+                          widgetVar="wvCountry"
+                          modal="true"
+                          showEffect="fade"
+                          hideEffect="fade"
+                          resizable="true" 
+                          width="280">
+                    <p:outputPanel>
+                        <h:panelGrid columns="2" cellpadding="5" cellspacing="5">
+                            <p:outputLabel value="Nombre"/>
+                            <p:inputText value="#{crudDevice.newCountry.description}" id="itDlgCountry"/>
+                        </h:panelGrid>
+                        <p:commandButton id="btnCreateCountry" 
+                                         value="Aceptar"  
+                                         style="margin-top: 10px;"
+                                         action="#{crudDevice.createCountry}" update="@([id$=growl]) @([id$=somCountry]) @([id$=itDlgCountry])"/>
+                    </p:outputPanel>
+                </p:dialog>
+
+                <p:dialog header="Agregar Ciudad"
+                          id="dlgCity"
+                          widgetVar="wvCity"
+                          modal="true"
+                          showEffect="fade"
+                          hideEffect="fade"
+                          resizable="true" 
+                          width="280">
+                    <p:outputPanel>
+                        <h:panelGrid columns="2" cellpadding="10" cellspacing="5">
+                            <p:outputLabel value="País"/>
+                            <p:selectOneMenu id="somCountryDlg" 
+                                             value="#{crudDevice.selectedCountry.idCountry}" 
+                                             filter="true" 
+                                             filterMatchMode="startsWith"
+                                             effect="fade" >
+                                <f:selectItem itemLabel="SELECCIONE PAIS" itemValue="" noSelectionOption="true" />
+                                <f:selectItems value="#{crudDevice.listCountry}" var="codlf" itemLabel="#{codlf.description}" itemValue="#{codlf.idCountry}" />
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="Ciudad"/>
+                            <p:inputText value="#{crudDevice.newCity.description}" id="itDlgCity"/>
+                        </h:panelGrid>
+                        <p:commandButton id="btnCreateCity" 
+                                         value="Aceptar"  
+                                         style="margin-top: 10px;"
+                                         action="#{crudDevice.createCity}" update="@([id$=growl]) @([id$=somCity]) @([id$=itDlgCity])"/>
+                    </p:outputPanel>
+                </p:dialog>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

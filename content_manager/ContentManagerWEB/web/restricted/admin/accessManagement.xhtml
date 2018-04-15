@@ -1,0 +1,151 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html lang="es-ES"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition  template="/WEB-INF/facelets/template/gdm.xhtml"> 
+        <ui:define name="content-center">
+            <h:form id="form" >
+                <p:growl id="growl" showDetail="true" autoUpdate="true" />
+                <p:tabView>
+                    <p:tab title="Usuarios">
+                        <p:accordionPanel>
+                            <p:ajax event="tabChange" listener="#{accessManagement.updateUserList()}" update="@([id$=dtUser])" />
+                            <p:tab title="Agregar usuario">
+                                <h:panelGrid id="pgCreateUser" columns="3" cellpadding="5" cellspacing="5">
+                                    <p:outputLabel value="Usuario"/>
+                                    <p:inputText value="#{accessManagement.newUser.userName}" id="userName"/>
+                                    <p:message for="userName" />
+
+                                    <p:outputLabel value="Contraseña"/>
+                                    <p:password value="#{accessManagement.newUser.password}" match="repeated_password" 
+                                                validatorMessage="Las constraseñas no coinciden" id="password"/>
+                                    <p:message for="password" />
+
+                                    <p:outputLabel value="Confirmar contraseña"/>
+                                    <p:password value="#{accessManagement.comfirmPassword}" id="repeated_password" />
+                                    <p:message for="repeated_password" />
+
+                                    <p:outputLabel value="Nombre"/>
+                                    <p:inputText value="#{accessManagement.newUser.firstName}" id="firstName"/>
+                                    <p:message for="firstName" />
+
+                                    <p:outputLabel value="Apellido"/>
+                                    <p:inputText value="#{accessManagement.newUser.lastName}" id="lastName" />
+                                    <p:message for="lastName" />
+
+                                    <p:outputLabel value="Sexo"/>
+                                    <p:selectOneMenu value="#{accessManagement.newUser.gender}" id="gender">
+                                        <f:selectItem itemLabel="FEMENINO" itemValue="1" />
+                                        <f:selectItem itemLabel="MASCULINO" itemValue="2" />
+                                    </p:selectOneMenu>
+                                    <p:message for="gender" />
+
+                                    <p:outputLabel value="Email"/>
+                                    <p:inputText value="#{accessManagement.newUser.email}" id="email" />
+                                    <p:message for="email" />
+
+                                    <p:outputLabel value="Telefono"/>
+                                    <p:inputText value="#{accessManagement.newUser.phone}" id="phone" />
+                                    <p:message for="phone" />
+
+                                    <p:outputLabel value="Role"/>
+                                    <p:selectOneMenu id="somLocation" 
+                                                     value="#{accessManagement.selectedRole.idRole}" 
+                                                     filter="true" 
+                                                     filterMatchMode="startsWith"
+                                                     effect="fade" >
+                                        <f:selectItem itemLabel="SELECCIONE ROLE" itemValue="" noSelectionOption="true" />
+                                        <f:selectItems value="#{accessManagement.listRoles}" var="lc" itemLabel="#{lc.description}" itemValue="#{lc.idRole}" />
+                                    </p:selectOneMenu>
+                                    <p:message for="somLocation" />
+                                </h:panelGrid>
+                                <p:commandButton id="btnQuery" value="Aceptar"  action="#{accessManagement.createUser()}" update="@([id$=pgCreateUser]) @([id$=dtUser]) @([id$=growl])"/>
+                            </p:tab>
+                            <p:tab title="Listado de usuarios">
+                                <p:dataTable id="dtUser"
+                                             rowIndexVar="indexVar"
+                                             var="pe"
+                                             value="#{accessManagement.listUsers}"
+                                             editable="true"
+                                             paginator="true"
+                                             rows="10">
+                                    <p:ajax event="rowEdit" listener="#{accessManagement.onRowEdit}" update="@([id$=growl])" />
+                                    <p:ajax event="rowEditCancel" listener="#{accessManagement.onRowCancel}" update="@([id$=growl])" />
+
+                                    <p:column headerText="Usuario" filterBy="#{pe.userName}" filterMatchMode="contains">
+                                        <h:outputText value="#{pe.userName}" />
+                                    </p:column>
+                                    <p:column headerText="Nombre" filterBy="#{pe.firstName}" filterMatchMode="contains">
+                                        <p:cellEditor>
+                                            <f:facet name="output"><h:outputText value="#{pe.firstName}" /></f:facet>
+                                            <f:facet name="input"><p:inputText value="#{pe.firstName}" style="width:100%" label="Nombre"/></f:facet>
+                                        </p:cellEditor>
+                                    </p:column>
+                                    <p:column headerText="Apellido" filterBy="#{car.id}" filterMatchMode="contains">
+                                        <p:cellEditor>
+                                            <f:facet name="output"><h:outputText value="#{pe.lastName}" /></f:facet>
+                                            <f:facet name="input"><p:inputText value="#{pe.lastName}" style="width:100%" label="Apellido"/></f:facet>
+                                        </p:cellEditor>
+                                    </p:column>
+                                    <p:column headerText="Sexo">
+                                        <p:cellEditor>
+                                            <f:facet name="output"><h:outputText value="#{pe.gender}" /></f:facet>
+                                            <f:facet name="input">
+                                                <p:selectOneMenu value="#{pe.gender}">
+                                                    <f:selectItem itemLabel="FEMENINO" itemValue="1" />
+                                                    <f:selectItem itemLabel="MASCULINO" itemValue="2" />
+                                                </p:selectOneMenu>
+                                            </f:facet>
+                                        </p:cellEditor>
+                                    </p:column>
+                                    <p:column headerText="Role">
+                                        <p:cellEditor>
+                                            <f:facet name="output"><h:outputText value="#{pe.idRole.description}" /></f:facet>
+                                            <f:facet name="input">
+                                                <p:selectOneMenu value="#{accessManagement.selectedRoleEdit.idRole}" style="width:100%">
+                                                    <f:selectItems value="#{accessManagement.listRoles}" var="role" itemLabel="#{role.description}" itemValue="#{role.idRole}" />
+                                                </p:selectOneMenu>
+                                            </f:facet>
+                                        </p:cellEditor>
+                                    </p:column>
+                                    <p:column headerText="Email">
+                                        <p:cellEditor>
+                                            <f:facet name="output"><h:outputText value="#{pe.email}" /></f:facet>
+                                            <f:facet name="input"><p:inputText value="#{pe.email}" style="width:100%" label="Email"/></f:facet>
+                                        </p:cellEditor>
+                                    </p:column>
+                                    <p:column headerText="Telefono">
+                                        <p:cellEditor>
+                                            <f:facet name="output"><h:outputText value="#{pe.phone}" /></f:facet>
+                                            <f:facet name="input"><p:inputText value="#{pe.phone}" style="width:100%" label="Telefono"/></f:facet>
+                                        </p:cellEditor>
+                                    </p:column>
+                                    <p:column headerText="Activo">
+                                        <p:cellEditor>
+                                            <f:facet name="output"><h:outputText value="#{pe.active eq true ? 'SI':'NO'}" /></f:facet>
+                                            <f:facet name="input">
+                                                <p:selectOneMenu value="#{pe.active}">
+                                                    <f:selectItem itemLabel="SI" itemValue="true" />
+                                                    <f:selectItem itemLabel="NO" itemValue="false" />
+                                                </p:selectOneMenu>
+                                            </f:facet>
+                                        </p:cellEditor>
+                                    </p:column>
+                                    <p:column style="width:32px">
+                                        <p:rowEditor />
+                                    </p:column>
+                                </p:dataTable>
+                            </p:tab>
+                        </p:accordionPanel>
+                    </p:tab>
+                </p:tabView>
+            </h:form>
+
+        </ui:define>
+    </ui:composition>
+</html>

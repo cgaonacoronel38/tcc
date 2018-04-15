@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html lang="es-ES"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition  template="/WEB-INF/facelets/template/gdm.xhtml"> 
+        <ui:define name="content-center">
+            <h:form id="form" style="height: 880px;">
+                <p:growl id="growl" showDetail="true" autoUpdate="true"/>
+                <h:panelGrid columns="1" style="width:100%">
+                    <p:tabView>
+                        <p:tab title="Audiencias - Hoy">
+                            <p:chart type="line" model="#{audienceReport.deviceHourAnimateModel}" />
+                            <br/><br/>
+                            <p:chart type="line" model="#{audienceReport.cityHourAnimateModel}" />
+                        </p:tab>
+                        <p:tab title="Audiencias - Meses">
+                            <p:chart type="line" model="#{audienceReport.deviceMonthAnimateModel}"/>
+                            <br/><br/>
+                            <p:chart type="line" model="#{audienceReport.cityMonthAnimateModel}"/>
+                        </p:tab>
+                    </p:tabView>
+                </h:panelGrid>
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
