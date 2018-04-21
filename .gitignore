@@ -20,3 +20,17 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+/content_manager/ContentManagerEJB/dist/
+/content_manager/ContentManagerEJB/build/
+/content_manager/ContentManagerWEB/dist/
+/content_manager/ContentManagerWEB/build/
+/content_player/DSPlayer/dist/
+/content_player/DSPlayer/build/
+/content_player/FaceDetection2/build/
+/content_manager/LoginEJB/dist/
+/content_manager/LoginEJB/build/
+/content_manager/ContentManagerEJB/nbproject/private/
+/content_manager/ContentManagerWEB/nbproject/private/
+/content_manager/LoginEJB/nbproject/private/
+/content_player/DSPlayer/nbproject/private/
+/content_player/FaceDetection2/nbproject/private/
