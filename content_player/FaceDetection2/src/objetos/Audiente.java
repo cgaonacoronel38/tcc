@@ -11,7 +11,7 @@ import java.util.Date;
  *
  * @author tokio
  */
-public class Rostro {
+public class Audiente {
 
     private int id;
 

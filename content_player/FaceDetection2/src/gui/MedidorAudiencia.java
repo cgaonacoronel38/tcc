@@ -1,11 +1,3 @@
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Author: Taha Emara
-// WebSite : www.Emaraic.com
-// E-mail  : taha@emaraic.com
-//
-//                   Real time face detection using OpenCV with Java
-//
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package gui;
 
 import java.awt.Graphics;
@@ -30,94 +22,58 @@ import org.opencv.objdetect.CascadeClassifier;
 import org.opencv.videoio.VideoCapture;
 import py.edu.columbia.utils.Util;
 
-/**
- *
- * @author Taha Emara
- */
-public class FaceDetection extends javax.swing.JFrame {
-///
+public class MedidorAudiencia extends javax.swing.JFrame {
 
     private DaemonThread myThread = null;
-    int count = 0;
-    VideoCapture capturador = null;
-    Mat frame = new Mat();
-    MatOfByte mem = new MatOfByte();
-    CascadeClassifier faceDetector = new CascadeClassifier("haarcascade_frontalface_alt.xml");
-    MatOfRect faceDetections = new MatOfRect();
-///    
-    private int id = 0;
 
     class DaemonThread implements Runnable {
 
+        //valatile permite que el atributo sea visible desde cualquier hilo de ejecucion
         protected volatile boolean runnable = false;
+        private int idAudiencia;
+        private VideoCapture capturador;
+        private int cantidad;
+        private Mat captura;
+        private MatOfByte matOfByte;
+        private CascadeClassifier detectorRostros;
+        private MatOfRect rostrosDetectados;
+        private List<Audiente> audiencia;
+        private List<Audiente> audienciaDeCaptura;
 
         @Override
         public void run() {
             synchronized (this) {
-
-                // variables propias
-                int x = 0; // frame que coontiene un rostro capturado
-                long lastFrame = 0; // ultimo frame con rotro
-                long inicialFrame = 0; // primer frame con rostro
-                boolean registrado = false; // indicamos si yaregistramos a la audiencia
-
-                List<Audiente> listaRostro = new ArrayList<>();
-                List<Audiente> listaRostroAux = new ArrayList<>();
+                idAudiencia = 0;
+                cantidad = 0;
+                capturador = new VideoCapture(0);
+                captura = new Mat();
+                matOfByte = new MatOfByte();
+                detectorRostros = new CascadeClassifier("haarcascade_frontalface_alt.xml");
+                rostrosDetectados = new MatOfRect();
+                audiencia = new ArrayList();
 
                 while (runnable) {
                     if (capturador.grab()) {
 
-//                        // si el ultimo frame fue registrado hace 10 segundos, cancelamos el seguimiento de esta audiencia
-//                        if (lastFrame > 0 && ((System.currentTimeMillis() - lastFrame) > 10000)) {
-//                            System.out.println("Seguimiento audiencia cancelada");
-//                            lastFrame = 0;
-//                            inicialFrame = 0;
-//                            registrado = false;
-//                            x = 0;
-//                        }
-//                        // si han pasado 5 segundos desde el registro del primer frame, registrar audiencia
-//                        if ((System.currentTimeMillis() - inicialFrame) > 5000 && registrado == false && inicialFrame > 0) {
-//                            System.out.println("Audiencias registrada");
-//                            registrado = true;
-//                        }
                         try {
-                            capturador.retrieve(frame);
+                            capturador.retrieve(captura);
                             Graphics g = jPanel1.getGraphics();
-                            faceDetector.detectMultiScale(frame, faceDetections);
-                            //System.out.println(String.format("Detectando %s rostros", faceDetections.toArray().length));
+                            detectorRostros.detectMultiScale(captura, rostrosDetectados);
+                            
+                            audienciaDeCaptura = obtenerAudiencia(rostrosDetectados);
+                            
+                            captura = encerrarRostros(rostrosDetectados);
+                            
+                            actualizarAudiencia(audiencia, audienciaDeCaptura);
 
-                            listaRostroAux.clear();
-                            for (Rect rect : faceDetections.toArray()) {
-                                Audiente rostro = new Audiente();
-                                rostro.setEje_x(rect.x + rect.width / 2);
-                                rostro.setEje_y(rect.y + rect.height / 2);
-                                rostro.setAncho(rect.width);
-                                listaRostroAux.add(rostro);
+                            System.out.println("Audiencia: " + idAudiencia);
+                            System.out.println("Rostros Capturado: " + audiencia.size());
 
-                                Imgproc.circle(frame, new Point(rect.x + rect.width / 2, rect.y + rect.height / 2), 5 + rect.width / 2, new Scalar(0, 255, 0));
-                                cruzarRostros(listaRostro, listaRostroAux);
-                                
-                                System.out.println("Rostros: " + id);
-                                System.out.println("Cantidad rostros "+listaRostro.size());
-                                for(Audiente face : listaRostro){
-                                    System.out.println("\tHubicacion "+face.getEje_x()+" "+face.getEje_y());
-                                }
+                            Imgcodecs.imencode(".bmp", captura, matOfByte);
 
-//                                x++;
-//                                if (x > 0) {
-//                                    //System.out.println("frame " + x); //cgaona
-//                                    if (x == 1) {
-//                                        System.out.println("conteo audiencia iniciada");
-//                                        inicialFrame = System.currentTimeMillis();
-//                                    }
-//                                    lastFrame = System.currentTimeMillis();
-//                                }
-                            }
-
-                            Imgcodecs.imencode(".bmp", frame, mem);
-
-                            Image im = ImageIO.read(new ByteArrayInputStream(mem.toArray()));
+                            Image im = ImageIO.read(new ByteArrayInputStream(matOfByte.toArray()));
                             BufferedImage buff = (BufferedImage) im;
+                            
                             if (g.drawImage(buff, 0, 0, getWidth(), getHeight() - 150, 0, 0, buff.getWidth(), buff.getHeight(), null)) {
                                 if (runnable == false) {
                                     System.out.println("Paused ..... ");
@@ -125,54 +81,74 @@ public class FaceDetection extends javax.swing.JFrame {
                                 }
                             }
                         } catch (Exception ex) {
-                            System.out.println("Error");
+                            //ex.printStackTrace();
                         }
                     }
                 }
+                capturador.release();
+            }
+        }
+
+        private ArrayList<Audiente> obtenerAudiencia(MatOfRect rostros) {
+            ArrayList<Audiente> audientes = new ArrayList();
+            for (Rect rect : rostros.toArray()) {
+                Audiente rostro = new Audiente();
+                rostro.setEje_x(rect.x + rect.width / 2);
+                rostro.setEje_y(rect.y + rect.height / 2);
+                rostro.setAncho(rect.width);
+                audientes.add(rostro);
+            }
+            return audientes;
+        }
+        
+        private Mat encerrarRostros(MatOfRect rostros) {
+            Mat rostrosEncerrados = new Mat();
+            ArrayList<Audiente> audientes = new ArrayList();
+            for (Rect rect : rostros.toArray()) {
+                Imgproc.circle(rostrosEncerrados, new Point(rect.x + rect.width / 2, rect.y + rect.height / 2), 5 + rect.width / 2, new Scalar(0, 255, 0));
+            }
+            return rostrosEncerrados;
+        }
+        
+        public void actualizarAudiencia(List<Audiente> listRostros, List<Audiente> listRostrosAux) {
+            for (Audiente rostroAux : listRostrosAux) {
+                rostroAux.setMatched(false);
+                for (int i = 0; i < listRostros.size(); i++) {
+                    if (!listRostros.get(i).isMatched()) {
+                        if (listRostros.get(i).esRostro(rostroAux.getEje_x(), rostroAux.getEje_y())) {
+                            listRostros.get(i).setAncho(rostroAux.getAncho());
+                            listRostros.get(i).setEje_x(rostroAux.getEje_x());
+                            listRostros.get(i).setEje_y(rostroAux.getEje_y());
+                            listRostros.get(i).setMatched(true);
+                            rostroAux.setMatched(true);
+                            listRostros.get(i).setFecha_hasta(new Date());
+                            break;
+                        }
+                    }
+                }
+                if (!rostroAux.isMatched()) {
+                    rostroAux.setFecha_desde(new Date());
+                    rostroAux.setFecha_hasta(rostroAux.getFecha_desde());
+                    idAudiencia++;
+                    rostroAux.setId(idAudiencia);
+                    listRostros.add(rostroAux);
+                }
+            }
+            for (int i = 0; i < listRostros.size(); i++) {
+                listRostros.get(i).setMatched(false);
+                if (Util.diferenciaEnSegundos(new Date(), listRostros.get(i).getFecha_hasta()) >= 5) {
+                    listRostros.remove(i);
+                    i--;
+                }
             }
         }
     }
 
-/////////
     /**
      * Creates new form FaceDetection
      */
-    public FaceDetection() {
+    public MedidorAudiencia() {
         initComponents();
-        System.out.println(FaceDetection.class.getResource("haarcascade_frontalface_alt.xml").getPath().substring(1));
-    }
-
-    public void cruzarRostros(List<Audiente> listRostros, List<Audiente> listRostrosAux) {
-        for (Audiente rostroAux : listRostrosAux) {
-            rostroAux.setMatched(false);
-            for (int i = 0; i < listRostros.size(); i++) {
-                if (!listRostros.get(i).isMatched()) {
-                    if (listRostros.get(i).esRostro(rostroAux.getEje_x(), rostroAux.getEje_y())) {
-                        listRostros.get(i).setAncho(rostroAux.getAncho());
-                        listRostros.get(i).setEje_x(rostroAux.getEje_x());
-                        listRostros.get(i).setEje_y(rostroAux.getEje_y());
-                        listRostros.get(i).setMatched(true);
-                        rostroAux.setMatched(true);
-                        listRostros.get(i).setFecha_hasta(new Date());
-                        break;
-                    }
-                }
-            }
-            if (!rostroAux.isMatched()) {
-                rostroAux.setFecha_desde(new Date());
-                rostroAux.setFecha_hasta(rostroAux.getFecha_desde());
-                id++;
-                rostroAux.setId(id);
-                listRostros.add(rostroAux);
-            }
-        }
-        for (int i = 0; i < listRostros.size(); i++) {
-            listRostros.get(i).setMatched(false);
-            if (Util.diferenciaEnSegundos(new Date(), listRostros.get(i).getFecha_hasta()) >= 5) {
-                listRostros.remove(i);
-                i--;
-            }
-        }
     }
 
     /**
@@ -249,15 +225,10 @@ public class FaceDetection extends javax.swing.JFrame {
         myThread.runnable = false;            // stop thread
         jButton2.setEnabled(false);   // activate start button 
         jButton1.setEnabled(true);     // deactivate stop button
-
-        capturador.release();  // stop caturing fron cam
-
-
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
-        capturador = new VideoCapture(0); // video capture from default cam
         myThread = new DaemonThread(); //create object of threat class
         Thread t = new Thread(myThread);
         t.setDaemon(true);
@@ -265,8 +236,6 @@ public class FaceDetection extends javax.swing.JFrame {
         t.start();                 //start thrad
         jButton1.setEnabled(false);  // deactivate start button
         jButton2.setEnabled(true);  //  activate stop button
-
-
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -289,20 +258,21 @@ public class FaceDetection extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FaceDetection.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MedidorAudiencia.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FaceDetection.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MedidorAudiencia.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FaceDetection.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MedidorAudiencia.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(FaceDetection.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MedidorAudiencia.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new FaceDetection().setVisible(true);
+                new MedidorAudiencia().setVisible(true);
             }
         });
     }
