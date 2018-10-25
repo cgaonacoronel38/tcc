@@ -22,7 +22,7 @@ public class TestGUI extends javax.swing.JFrame {
         medidorAudiencia = new MedidorAudiencia();
         medidorAudiencia.setListener(new MedidorAudienciaListener() {
             @Override
-            public void onGestoSiguiente() {
+            public void onGestoDerecha() {
                 System.out.println("Siguiente");
             }
 
@@ -48,6 +48,11 @@ public class TestGUI extends javax.swing.JFrame {
             @Override
             public void onNuevoAudiente(Rostro rostro) {
                 System.out.println("Nuevo Audiente! " + rostro.toString());
+            }
+
+            @Override
+            public void onGestoAgarrar() {
+                System.out.println("Pausar reproductor");
             }
         });
 

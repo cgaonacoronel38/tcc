@@ -52,7 +52,7 @@ public class MedidorAudiencia extends Thread {
         rostrosAudiencia = new ArrayList();
         rostrosCandidatosAudiencia = new ArrayList();
         detectorRostros = new CascadeClassifier(getClass().getResource(Cons.HAARCASCADE_FRONTALFACE_ALT2).getPath());
-        detectorManos = new CascadeClassifier(getClass().getResource(Cons.HAARCASCADE_PALMA_CERRADA).getPath());
+        detectorManos = new CascadeClassifier(getClass().getResource(Cons.HAARCASCADE_PUNHO).getPath());
     }
 
     @Override
@@ -86,7 +86,7 @@ public class MedidorAudiencia extends Thread {
 //                    Imgproc.equalizeHist(capturaGris, capturaGris);
 
                     detectorRostros.detectMultiScale(capturaGris, matRostrosDetectados, factorEscala, minVecinos, Objdetect.CASCADE_SCALE_IMAGE, new Size(tamanoRectMin, tamanoRectMin), new Size(tamanoRectMax, tamanoRectMax));
-                    detectorManos.detectMultiScale(capturaGris, matManosDetectados, factorEscala, minVecinos, Objdetect.CASCADE_SCALE_IMAGE, new Size(tamanoRectMin, tamanoRectMin), new Size(tamanoRectMax, tamanoRectMax));
+                    detectorManos.detectMultiScale(captura, matManosDetectados, factorEscala, minVecinos, Objdetect.CASCADE_SCALE_IMAGE, new Size(tamanoRectMin, tamanoRectMin), new Size(tamanoRectMax, tamanoRectMax));
                    
                     for (Rect rect : matRostrosDetectados.toArray()) {
                         Rostro rostro = new Rostro();
