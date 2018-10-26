@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author alcides.alarcon
+ * @author tokio
  */
 @ManagedBean(name = "loginMB")
 @ViewScoped
@@ -85,6 +85,7 @@ public class Login implements Serializable {
     }
 
     public void signIn(ActionEvent ae) {
+        log.info("validando usuario: " + username + "; " + password);
         if (!valid()) {
             return;
         }
@@ -94,8 +95,13 @@ public class Login implements Serializable {
         HttpServletResponse res = (HttpServletResponse) ec.getResponse();
 
         try {
+            User user = gdmSession.getUser();
+            if (user != null && user.getActive() == true) {
+                ec.redirect(nav.getUserIndex() + "?status=0");
+            }
+
             User su = sysuserEJB.findByUsername(username);
-            log.info("usuario"+username);
+            log.info("usuario" + username);
             if (su == null) {
                 MsgUtil.addMessageWithoutKey(FacesMessage.SEVERITY_ERROR,
                         "ERROR",
@@ -104,35 +110,35 @@ public class Login implements Serializable {
                 return;
             }
 
-            if(su.getActive()){
-                    log.info("El usuario está activo, username: {}, activo: {}", username, su.getActive());
+            if (su.getActive()) {
+                log.info("El usuario está activo, username: {}, activo: {}", username, su.getActive());
 
-                    try {
-                        log.info(username+" ; "+password);
-                        req.login(username, password);
-                    } catch (Exception ex) {
-                        log.info(ex.getLocalizedMessage());
-                        log.error("Error en inicio de sesión (request.login()) para el usuario: {}", username, ex.getCause());
-                        System.err.println("Error" + ex.getMessage());
+                try {
+                    log.info(username + " ; " + password);
+                    req.login(username, password);
+                } catch (Exception ex) {
+                    log.info(ex.getLocalizedMessage());
+                    log.error("Error en inicio de sesión (request.login()) para el usuario: {}", username, ex.getCause());
+                    System.err.println("Error" + ex.getMessage());
 
-                        StringBuilder msg = new StringBuilder();
-                        msg.append("Usuario o contraseña no válido!!.  Recuerde que solo tiene [ 3 ] intentos, ");
-                        msg.append("de lo contrario la cuenta se bloquea por [ 24 ] horas.");
-
-                        MsgUtil.addMessageWithoutKey(FacesMessage.SEVERITY_ERROR,
-                                "ERROR",
-                                msg.toString());
-
-                        return;
-                    }
-            } else {
-                    log.info("El usuario está bloquedao, username: {}, activo: {}", username, su.getActive());
+                    StringBuilder msg = new StringBuilder();
+                    msg.append("Usuario o contraseña no válido!!.  Recuerde que solo tiene [ 3 ] intentos, ");
+                    msg.append("de lo contrario la cuenta se bloquea por [ 24 ] horas.");
 
                     MsgUtil.addMessageWithoutKey(FacesMessage.SEVERITY_ERROR,
                             "ERROR",
-                            "Usuario bloqueado.");
+                            msg.toString());
 
                     return;
+                }
+            } else {
+                log.info("El usuario está bloquedao, username: {}, activo: {}", username, su.getActive());
+
+                MsgUtil.addMessageWithoutKey(FacesMessage.SEVERITY_ERROR,
+                        "ERROR",
+                        "Usuario bloqueado.");
+
+                return;
             }
 
             if (req.getUserPrincipal() != null) {
@@ -170,7 +176,7 @@ public class Login implements Serializable {
             }
         }
     }
-    
+
     /*
     public void signIn(ActionEvent ae) {
         if (!valid()) {
@@ -259,8 +265,7 @@ public class Login implements Serializable {
             }
         }
     }
-    */
-
+     */
     public void signOff() {
         HttpServletRequest request = null;
 
@@ -289,12 +294,12 @@ public class Login implements Serializable {
                 sb.append(String.format("\t-> Dirección remota: %s\n", request.getRemoteAddr()));
                 sb.append(String.format("\t-> Host remoto: %s\n", request.getRemoteHost()));
 
-            // Se invalida la actual session HTTP.
+                // Se invalida la actual session HTTP.
                 // Se llama internamente la método de JAAS LoginModule logout()
                 request.getSession().invalidate();
                 gdmSession.setUser(null);
                 gdmSession.removeUserInHttpSession();
-                
+
                 log.info(sb.toString());
             } else {
                 sb.append("No se pudo obtener información de sesión, no se puede invalidar.");
@@ -302,21 +307,21 @@ public class Login implements Serializable {
 
             // Se re-direcciona a la página de inicio, AREA-FREE
             request.getServletContext().log("Usuario ha sido INVALIDADO, redireccionando al index...");
-            
+
             MsgUtil.addMessageWithoutKey(FacesMessage.SEVERITY_INFO,
-                                         "Advertencia",
-                                         "Sesión finalizada!");            
-            
+                    "Advertencia",
+                    "Sesión finalizada!");
+
             FacesContext.getCurrentInstance().getExternalContext().redirect(nav.getHome());
-            
+
             //response.sendRedirect(request.getContextPath() + "/index.pf?faces-redirect=true");
             //response.sendRedirect(nav.getHome());
         } catch (Exception ex) {
             log.error("Error al realizar el logout del usuario: " + username, ex);
-            
+
             MsgUtil.addMessageWithoutKey(FacesMessage.SEVERITY_FATAL,
-                                         "ERROR",
-                                         "No se pudo realziar el cierre de sesión, consulte con Soporte.");
+                    "ERROR",
+                    "No se pudo realziar el cierre de sesión, consulte con Soporte.");
         }
     }
 }

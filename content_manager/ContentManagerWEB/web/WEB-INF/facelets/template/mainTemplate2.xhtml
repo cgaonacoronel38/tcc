@@ -46,14 +46,15 @@
     </h:head>
     <h:body id="page-top"
             pt:data-spy="scroll"
-            pt:data-target=".navbar-fixed-top">
+            pt:data-target=".navbar-fixed-top" >
+            <!--onload="PF('block').show()"  onunload ="PF('block').hide()">-->
         <section id="wrapper">
             <header>
-                <ui:include src="header.xhtml"/>
+                <ui:include src="header.xhtml" />
             </header>
 
-            <section id="mainContent">
-                <ui:insert name="content">
+            <section id="mainContent" onload="PF('block').show()"  onloadeddata="PF('block').hide()">
+                <ui:insert name="content" >
                 </ui:insert>
             </section>
 
@@ -61,5 +62,10 @@
                 <ui:include src="footer.xhtml"/>
             </footer>
         </section>
+        <p:blockUI block="@([id$=page-top])" widgetVar="block" styleClass="zindex-blockui">
+            Cargando pagina, favor espere...<br />
+            <p:graphicImage library="img" name="ajaxloadingbar.gif" styleClass="z-index:90000!important;"/>
+            <!--<h:graphicImage library="img" name="loading1.gif"/>-->
+        </p:blockUI>
     </h:body>
 </html>

@@ -41,7 +41,7 @@ public class Config implements Serializable {
     public String appJSFSufix() throws GDMEJBException {
         try {
             int idcompany = gdmSession.getDefaultCompany().getIdCompany();
-            log.info("Comapny: "+idcompany);
+//            log.info("Comapny: "+idcompany);
             return dcorsMaps.findSysParamByKey(Params.APP_SUFIX).getValue();
         } catch (Exception ex) {
             if (ex instanceof GDMEJBException) {

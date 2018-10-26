@@ -10,6 +10,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Random;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,6 +36,10 @@ public class JCefFrame extends JFrame {
 
     private static Thread player = null;
     private static Thread downloader = null;
+    private static Thread currentAudience = null;
+    private static Thread ping = null;
+    private static Thread notifyAudienceDevice = null;
+    private static Thread notifyAudienceContent = null;
     private static PlayList playList = null;
 
     public ContentFacade contentEJB = new ContentFacade();
@@ -146,7 +152,7 @@ public class JCefFrame extends JFrame {
                 while (true) {
                     try {
                         Thread.sleep(5000);
-                        
+
                         contentUUID = fd.verifiContent();
                         if (contentUUID != null) {
                             long startTime = System.currentTimeMillis();
@@ -167,5 +173,78 @@ public class JCefFrame extends JFrame {
             }
         };
         downloader.start();
+
+        /**
+         * Hilo que genera número de aleatorio de audiencias
+         */
+        currentAudience = new Thread() {
+            public void run() {
+                Random rand = new Random();
+                while (true) {
+                    try {
+                        Thread.sleep(2000);
+                        playList.setCurrentAudience(rand.nextInt(11));
+                    } catch (Exception ex) {
+                        System.err.println(ex.getMessage());
+                    }
+                }
+            }
+        };
+        currentAudience.start();
+
+        /**
+         * Hilo que hace ping al servidor
+         */
+        ping = new Thread() {
+            public void run() {
+                while (true) {
+                    try {
+                        Thread.sleep(3000);
+                        System.err.println("\n\n\n----------------------------------------");
+                        System.err.println("\tHaciendo ping a servidor");
+                        FileDownloader.ping(UUID.fromString("d8f6b33e-c893-4ac5-97da-a0936e6323d7"), UUID.fromString("1d7e629a-d467-48a0-a1e7-a0b8fa83cbcc"), playList.getCurrentAudience());
+                        System.err.println("----------------------------------------\n\n\n");
+                    } catch (Exception ex) {
+                        System.err.println(ex.getMessage());
+                    }
+                }
+            }
+        };
+        ping.start();
+        
+        notifyAudienceDevice = new Thread() {
+            public void run() {
+                while (true) {
+                    try {
+                        Thread.sleep(3000);
+                        System.err.println("\n\n\n----------------------------------------");
+                        System.err.println("\tNotificando audiencia de dispositivo");
+                        FileDownloader.registerAudienceDevice(UUID.fromString("d8f6b33e-c893-4ac5-97da-a0936e6323d7"), playList.getCurrentAudience());
+                        System.err.println("----------------------------------------\n\n\n");
+                    } catch (Exception ex) {
+                        System.err.println(ex.getMessage());
+                    }
+                }
+            }
+        };
+        notifyAudienceDevice.start();
+        
+        notifyAudienceContent = new Thread() {
+            public void run() {
+                while (true) {
+                    try {
+                        Thread.sleep(3000);
+                        System.err.println("\n\n\n----------------------------------------");
+                        System.err.println("\tNotificando audiencia de contenido");
+                        FileDownloader.registerAudienceContent(UUID.fromString("d8f6b33e-c893-4ac5-97da-a0936e6323d7"), UUID.fromString(playList.getContentName()), playList.getCurrentAudience());
+                        System.err.println("!!!!!Current content: "+playList.getContentName());
+                        System.err.println("----------------------------------------\n\n\n");
+                    } catch (Exception ex) {
+                        System.err.println(ex.getMessage());
+                    }
+                }
+            }
+        };
+        notifyAudienceContent.start();
     }
 }

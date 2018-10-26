@@ -15,15 +15,23 @@ import java.util.logging.Logger;
  * @author tokio
  */
 public final class PlayList extends Thread {
-    
     public ContentFacade contentEJB = new ContentFacade();
     private static final String PLAYER_HOST = "http://localhost/";
+    private Integer currentAudience;
     
     List<String> listContent = null;
     int listIntex = 0;
 
     public PlayList() {
         updateContentList();
+    }
+
+    public Integer getCurrentAudience() {
+        return currentAudience;
+    }
+
+    public void setCurrentAudience(Integer currentAudience) {
+        this.currentAudience = currentAudience;
     }
 
     public void updateContentList() {
@@ -43,6 +51,7 @@ public final class PlayList extends Thread {
         if (listIntex >= getListSize()) {
             listIntex = 0;
         }
+        System.out.println("Content: "+getContentName());
     }
     
     public void decrementListIntex() {
@@ -50,10 +59,15 @@ public final class PlayList extends Thread {
         if (listIntex < 0) {
             listIntex = getListSize() - 1;
         }
+        System.out.println("Content: "+getContentName());
     }
 
     public String getContent() {
         return listContent != null ? PLAYER_HOST + listContent.get(listIntex) : PLAYER_HOST;
+    }
+    
+    public String getContentName() {
+        return listContent != null ? listContent.get(listIntex) : "";
     }
 
     @Override
@@ -67,4 +81,6 @@ public final class PlayList extends Thread {
             }
         }
     }
+    
+    
 }

@@ -47,8 +47,8 @@
                                     <p:message for="txtPassword"/>
                                     <p:commandButton id="button" styleClass="btn btn-primary "
                                                      value="Acceder"
-                                                     update="@([id$=idFrmLogin])"
-                                                     icon="i fa fa-arrow-right fa-3x"
+                                                     update="@([id$=idFrmLogin])" 
+                                                     icon="i fa fa-arrow-right fa-3x" ajax="false"
                                                      actionListener="#{loginMB.signIn}" />
                                 </h:form>
                             </div>

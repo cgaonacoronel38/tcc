@@ -108,7 +108,7 @@ public class GDMSession implements Serializable {
     public Company getDefaultCompany() throws GDMEJBException {
         try {
             if(user != null){
-                log.info("Obteniendo compañia de usuario");
+//                log.info("Obteniendo compañia de usuario");
                 company = user.getIdCompany();
             } else {
                
@@ -143,7 +143,7 @@ public class GDMSession implements Serializable {
         FacesContext fc = FacesContext.getCurrentInstance();
         
         if(fc == null) {
-            log.warn("FacesContext nulo no se puede chequear la sesion desde JSF.");
+//            log.warn("FacesContext nulo no se puede chequear la sesion desde JSF.");
             
             HttpSession session = request.getSession(false);
             if (session == null || session.getAttribute("user") == null) {
@@ -152,11 +152,11 @@ public class GDMSession implements Serializable {
                 String user = session.getAttribute("user").toString();
                 
                 if(!user.trim().isEmpty()) {
-                    log.info("Usuario logueado, info desde la sesión, username: {}", user);
+//                    log.info("Usuario logueado, info desde la sesión, username: {}", user);
                 
                     return true;
                 } else {
-                    log.info("Usuario logueado pero vacio, info desde la sessión.");
+//                    log.info("Usuario logueado pero vacio, info desde la sessión.");
                     
                     return false;
                 }

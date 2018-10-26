@@ -132,7 +132,7 @@ public class FilterPermits implements Filter {
             
             gdmSession.setPreviousURL(url);
             
-            log.info("El usuario: {} tiene permiso para la url: {}", su.getUserName(), url);
+//            log.info("El usuario: {} tiene permiso para la url: {}", su.getUserName(), url);
                 
             chain.doFilter(request, response);
         } catch (Exception ex) {

@@ -5,6 +5,7 @@
  */
 package edu.columbia.tcc.dsplayer;
 
+import edu.columbia.ws.client.FileDownloader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,5 +37,11 @@ public class Test  extends Thread{
             Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+    }
+    
+    public static void main(String[] args) {
+        //FileDownloader.ping();
+        //FileDownloader.registerAudienceDevice();
+        //FileDownloader.registerAudienceContent();
     }
 }

@@ -7,6 +7,7 @@ package py.edu.columbia.tcc.ws;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.List;
 import java.util.logging.Level;
 import javax.annotation.ManagedBean;
 import javax.inject.Inject;
@@ -18,9 +19,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import py.edu.columbia.tcc.common.WSRespondeStatus;
 import py.edu.columbia.tcc.ejb.jpa.content.DeviceContentFacade;
 import py.edu.columbia.tcc.exception.GDMEJBException;
-import py.edu.columbia.tcc.model.bean.ContentBean;
+import py.edu.columbia.tcc.ejb.jpa.bean.ws.ContentBean;
+import py.edu.columbia.tcc.model.contentHandler.DeviceContent;
 
 /**
  *
@@ -38,11 +41,19 @@ public class WSContent implements Serializable {
     @Path("/get/{device}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getContent(@PathParam("device") String device) {
+        WSRespondeStatus responseStatus = WSRespondeStatus.REGISTER_ERROR;
         try {
-            return Response.ok().entity(deviceContentEJB.getContentBeanForDevice(device)).build();
-        } catch (GDMEJBException ex) {
+            ContentBean cb = deviceContentEJB.getContentBeanForDevice(device);
+            if(cb != null){
+                return WSUtil.getResponse(200, cb.getDeviceContentBean());
+            } else {
+                responseStatus = WSRespondeStatus.NOT_FOUND;
+                return WSUtil.getResponse(404, responseStatus.getStatusCode(), responseStatus.getStatusDescription());
+            }
+        } catch (Exception ex) {
             java.util.logging.Logger.getLogger(WSContent.class.getName()).log(Level.SEVERE, null, ex);
-            return Response.status(404).entity("Contenido no encontrado").build();
+            log.error("Error al registrar audiencia de contenido!!: " + ex.getMessage());
+            return WSUtil.getResponse(500, responseStatus.getStatusCode(), responseStatus.getStatusDescription());
         }
     }
     
@@ -86,15 +97,19 @@ public class WSContent implements Serializable {
     @Path("/comfirmDownload/{content}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response confirmDownload(@PathParam("content") String content) {
+        WSRespondeStatus responseStatus = WSRespondeStatus.REGISTER_ERROR;
         Integer update;
         try {
             update = deviceContentEJB.confirmDownload(content);
             if(update > 0){
-                return Response.status(200).entity("Contentido actualizado").build();
+                responseStatus = WSRespondeStatus.OK;
+                return WSUtil.getResponse(200, responseStatus.getStatusCode(), responseStatus.getStatusDescription());
             } 
         } catch (GDMEJBException ex) {
             java.util.logging.Logger.getLogger(WSContent.class.getName()).log(Level.SEVERE, null, ex);
+            return WSUtil.getResponse(500, responseStatus.getStatusCode(), responseStatus.getStatusDescription());
         }
-        return Response.status(404).entity("Contenido no encontrado").build();
+        responseStatus = WSRespondeStatus.NOT_FOUND;
+        return WSUtil.getResponse(404, responseStatus.getStatusCode(), responseStatus.getStatusDescription());
     }
 }

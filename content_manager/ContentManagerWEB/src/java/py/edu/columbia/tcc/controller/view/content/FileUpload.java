@@ -1,4 +1,4 @@
-package py.edu.columbia.tcc.controller.view.utils;
+package py.edu.columbia.tcc.controller.view.content;
 
 import py.edu.columbia.tcc.common.MsgUtil;
 import py.edu.columbia.tcc.common.SystemPaths;
@@ -7,33 +7,34 @@ import py.edu.columbia.tcc.ejb.jpa.content.ContentFacade;
 import py.edu.columbia.tcc.ejb.jpa.content.DeviceContentFacade;
 import py.edu.columbia.tcc.ejb.jpa.content.DeviceFacade;
 import py.edu.columbia.tcc.exception.GDMEJBException;
-import py.edu.columbia.tcc.model.content.Content;
-import py.edu.columbia.tcc.model.content.Device;
-import py.edu.columbia.tcc.model.content.DeviceContent;
-import py.edu.columbia.tcc.model.content.DeviceContentPK;
+import py.edu.columbia.tcc.model.contentHandler.Content;
+import py.edu.columbia.tcc.model.contentHandler.Device;
+import py.edu.columbia.tcc.model.contentHandler.DeviceContent;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.New;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.FileUploadEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import py.edu.columbia.tcc.model.content.City;
+import py.edu.columbia.tcc.controller.view.utils.Message;
 
 @ManagedBean
 @ViewScoped
@@ -61,6 +62,10 @@ public class FileUpload implements Serializable {
     @New
     private Content newContent;
 
+    @Inject
+    @New
+    private DeviceContent newDeviceContent;
+
     private Integer selectedContent;
     private Integer dcIdDevice;
 
@@ -70,6 +75,7 @@ public class FileUpload implements Serializable {
 
     @PostConstruct
     public void init() {
+        updateContentList();
     }
 
     public List<Content> getListContent() {
@@ -120,6 +126,14 @@ public class FileUpload implements Serializable {
         this.listDeviceContent = listDeviceContent;
     }
 
+    public DeviceContent getNewDeviceContent() {
+        return newDeviceContent;
+    }
+
+    public void setNewDeviceContent(DeviceContent newDeviceContent) {
+        this.newDeviceContent = newDeviceContent;
+    }
+
     public void upload(FileUploadEvent event) {
         try {
             copyFile(event.getFile().getFileName(), event.getFile().getInputstream());
@@ -127,6 +141,7 @@ public class FileUpload implements Serializable {
             MsgUtil.addMessageWithoutKey(FacesMessage.SEVERITY_INFO,
                     "Archivo " + event.getFile().getFileName() + " subido exitosamente!",
                     "");
+            PrimeFaces.current().dialog().closeDynamic("createContent");
         } catch (IOException e) {
             log.error("Error al subir archivos en servicios de pagos " + e.getLocalizedMessage());
         }
@@ -135,7 +150,7 @@ public class FileUpload implements Serializable {
     public void copyFile(String fileName, InputStream in) {
         try {
             File filepath = new File(getFilePath());
-            
+
             if (existPath(filepath)) {
                 String directory = filepath.getAbsolutePath() + "/" + fileName;
                 OutputStream out = new FileOutputStream(new File(directory));
@@ -151,7 +166,7 @@ public class FileUpload implements Serializable {
                 out.flush();
                 out.close();
 
-                newContent.setName(fileName);
+//                newContent.setName(fileName);
                 newContent.setDirectory(directory);
                 newContent.setIdCompany(session.getDefaultCompany().getIdCompany().longValue());
                 contentEJB.create(newContent);
@@ -188,17 +203,22 @@ public class FileUpload implements Serializable {
             java.util.logging.Logger.getLogger(FileUpload.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    public void inactiveContent(Integer idContent) {
+        try {
+            contentEJB.inactiveContent(idContent);
+            deviceContentEJB.inactiveAllContentDevices(idContent);
+            updateContentList();
+            Message.info("Operacion exitosa", "El contenido ha sido desactivado");
+        } catch (GDMEJBException ex) {
+            java.util.logging.Logger.getLogger(FileUpload.class.getName()).log(Level.SEVERE, null, ex);
+            Message.error("Error en operacion", "El contenido no ha podido ser deshabilitado");
+        }
+    }
 
     public void updateDeviceContentList() {
         try {
-            log.info("listando contenidos de dispositivos");
-            log.info("content " + selectedContent);
             listDeviceContent = deviceContentEJB.listDeviceContent(selectedContent);
-            if (listDeviceContent == null) {
-                log.info("Lista de contenidos par dispositivo nulo");
-            } else {
-                log.info("Elementos lsitados " + listDeviceContent.size());
-            }
         } catch (GDMEJBException ex) {
             java.util.logging.Logger.getLogger(FileUpload.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -217,12 +237,67 @@ public class FileUpload implements Serializable {
     public void createDeviceContent() {
         try {
             DeviceContent deviceContent = new DeviceContent();
-            deviceContent.setDeviceContentPK(new DeviceContentPK(dcIdDevice, selectedContent));
+            //deviceContent.setDeviceContentPK(new DeviceContentPK(dcIdDevice, selectedContent));
             deviceContent.setActive(true);
             deviceContentEJB.create(deviceContent);
             MsgUtil.addMessageWithoutKey(FacesMessage.SEVERITY_INFO, "Inserción exitosa", "Dispositivo agregado correctamente!");
         } catch (ConstraintViolationException | GDMEJBException ex) {
             java.util.logging.Logger.getLogger(FileUpload.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public void viewModalCreateContent() {
+        Map<String, Object> options = new HashMap<>();
+        options.put("width", 800);
+        options.put("height", 380);
+        options.put("modal", true);
+        options.put("contentWidth", "100%");
+        options.put("contentHeight", "100%");
+        PrimeFaces.current().dialog().openDynamic("createContent", options, null);
+    }
+
+    public void viewModalCreateContentDevice(Integer idContent) {
+        try {
+            Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+            sessionMap.put("id_content", idContent);
+            log.error("Id content seteado: " + idContent);
+
+            Map<String, Object> options = new HashMap<>();
+            options.put("width", "90%");
+            options.put("height", 380);
+            options.put("modal", true);
+            options.put("contentWidth", "100%");
+            options.put("contentHeight", "100%");
+            PrimeFaces.current().dialog().openDynamic("createContentDevice", options, null);
+        } catch (Exception ex) {
+            log.error("Error al invocar view modal create content device: "+ex.getMessage());
+        }
+    }
+    
+    public void viewModalViewContentDevice(Integer idContent) {
+        try {
+            Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+            sessionMap.put("id_content", idContent);
+            log.error("Id content seteado: " + idContent);
+
+            Map<String, Object> options = new HashMap<>();
+            options.put("width", 800);
+            options.put("height", 380);
+            options.put("modal", true);
+            options.put("contentWidth", "100%");
+            options.put("contentHeight", "100%");
+            PrimeFaces.current().dialog().openDynamic("viewContentDevice", options, null);
+        } catch (Exception ex) {
+            log.error("Error al invocar view modal create content device: "+ex.getMessage());
+        }
+    }
+
+    public void onModalClosed() {
+        updateContentList();
+        Message.info("Registro exitoso", "El contenido ha sido agregado exitosamente!, refrescando datos...");
+    }
+    
+    public void onDeviceAdded() {
+        Message.info("Registro exitoso", "La terminal ha sido agregada exitosamente!");
     }
 }

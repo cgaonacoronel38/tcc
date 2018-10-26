@@ -6,121 +6,104 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
+    <h:head>
+        <title>Dashboard</title>
+        <h:outputStylesheet name="css/pf-default.css"/>
+    </h:head>
     <ui:composition  template="/WEB-INF/facelets/template/gdm.xhtml"> 
         <ui:define name="content-center">
-            <h:form style="height: 750px;">
+            <style>
+                .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default, .ui-button, html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:active{
+                    background: #044687;
+                    border: 1px solid #044687;
+                    color: white;
+                }
+            </style>
+            <h:form style="height: 750px;" id="formContentView">
                 <p:messages autoUpdate="true" />
-                <p:accordionPanel>
-                    <p:ajax event="tabChange" listener="#{fileUpload.updateContentList()}" update="@([id$=dtContent])" />
-                    <p:tab title="Agregar contenido">
 
-                        <h:panelGrid columns="1" id="data" style="width: 100%;">
-                            <h:panelGrid columns="2" cellpadding="10" cellspacing="5" id="pgCreateLocation" rendered="false">
-                                <p:outputLabel value="Nombre"/>
-                                <p:inputText value="#{fileUpload.newContent.name}" />
-                                
-                                <p:outputLabel value="Descripcion"/>
-                                <p:inputText value="#{fileUpload.newContent.description}" />
+                <p:toolbar >
+                    <f:facet name="left">
+                        <p:commandButton value="Nuevo contenido" icon="fa fa-plus" actionListener="#{fileUpload.viewModalCreateContent()}" onclick="PF('block').show()" oncomplete="PF('block').hide()">
+                            <p:ajax event="dialogReturn" listener="#{fileUpload.onModalClosed()}" update="@([id$=dtContent])"
+                                    onstart="PF('block').show()" oncomplete="PF('block').hide()"/>
+                        </p:commandButton>
+                    </f:facet>
+                </p:toolbar>
+                <p:spacer height="5px" />
 
-                            </h:panelGrid>
+                <p:dataTable id="dtContent"
+                             rowIndexVar="indexVar"
+                             var="de"
+                             value="#{fileUpload.listContent}" 
+                             paginator="true"
+                             rows="10">
+                    <p:column filterBy="#{de.name}" filterMatchMode="contains"> 
+                        <f:facet name="header">
+                            <p:outputLabel value="Contenido" />
+                        </f:facet>
+                        <p:outputLabel value="#{de.name}" />
+                    </p:column>
 
-                            <p:fileUpload fileUploadListener="#{fileUpload.upload}" 
-                                          mode="advanced"
-                                          id="upload"
-                                          required="true"
-                                          fileLimit="1"
-                                          allowTypes="/(\.|\/)(zip)$/"
-                                          invalidFileMessage="Tipo de archivo no válido"
-                                          fileLimitMessage="Solo se permite un archivo por vez"
-                                          requiredMessage="Archivo requerido" 
-                                          update="@([id$=filerename]) @([id$=btnGenerate])"
-                                          style="margin: 5px 0px;width: 100%;" />
-                        </h:panelGrid>
-                    </p:tab>
-                    <p:tab title="Listado de contenidos">
-                        <p:dataTable id="dtContent"
-                                     rowIndexVar="indexVar"
-                                     var="de"
-                                     value="#{fileUpload.listContent}"
-                                     paginator="true"
-                                     rows="10">
-                            <p:column>
-                                <f:facet name="header">
-                                    <h:outputText value="Contenido" />
-                                </f:facet>
-                                <h:outputText value="#{de.name}" />
-                            </p:column>
+                    <p:column filterBy="#{de.description}" filterMatchMode="contains"> 
+                        <f:facet name="header">
+                            <p:outputLabel value="Descripcion" />
+                        </f:facet>
+                        <p:outputLabel value="#{de.description}" />
+                    </p:column>
 
-                            <p:column>
-                                <f:facet name="header">
-                                    <h:outputText value="Dispositivo" />
-                                </f:facet>
-                                <p:commandButton update="@([id$=dlgDeviceContent])"
-                                                 value="Ver o insertar"
-                                                 actionListener="#{fileUpload.contentSelected(de.idContent)}"
-                                                 style="margin-left: 15px;"
-                                                 id="btnDlgDeviceContent"
-                                                 oncomplete="PF('wvDeviceContent').show()"
-                                                 icon="fa fa-plus" />
-                            </p:column>
-                        </p:dataTable>
-                    </p:tab>
-                </p:accordionPanel>
+                    <p:column filterBy="#{de.duration}" filterMatchMode="exact">
+                        <f:facet name="header">
+                            <p:outputLabel value="Duracion" />
+                        </f:facet>
+                        <p:outputLabel value="#{de.duration}" />
+                    </p:column>
 
-                <p:dialog header="Asignar contenido a ciudad"
-                          id="dlgDeviceContent"
-                          widgetVar="wvDeviceContent"
-                          modal="true"
-                          showEffect="fade"
-                          hideEffect="fade"
-                          resizable="true" 
-                          width="500">
-                    <p:outputPanel>
-                        <p:messages id="msgDlg" />
-                        <p:accordionPanel>
-                            <p:ajax event="tabChange" listener="#{fileUpload.updateDeviceContentList()}" update="@([id$=pgListaDispositivos])" />
-                            <p:tab title="Agregar dispositivo">
-                                <h:panelGrid columns="2">
-                                    <p:outputLabel value="Dispositivo"/>
-                                    <p:selectOneMenu id="somDevice" 
-                                                     value="#{fileUpload.dcIdDevice}" 
-                                                     filter="true" 
-                                                     filterMatchMode="startsWith"
-                                                     effect="fade" >
-                                        <f:selectItem itemLabel="SELECCIONE DISPOSITIVO" itemValue="" noSelectionOption="true" />
-                                        <f:selectItems value="#{fileUpload.listDevice}" var="ci" itemLabel="#{ci.description}" itemValue="#{ci.idDevice}" />
-                                    </p:selectOneMenu>
-                                </h:panelGrid>
-                                <p:commandButton id="btnQuery" value="Aceptar"  action="#{fileUpload.createDeviceContent()}" update="@([id$=msgDlg])"/>
-                            </p:tab>
-                            <p:tab title="Listado de dispositivos">
-                                <p:panelGrid columns="1" id="pgListaDispositivos">
-                                    <p:dataTable id="dtDeviceContent"
-                                                 rendered="#{not empty fileUpload.listDeviceContent}"
-                                                 rowIndexVar="indexVar"
-                                                 var="pl"
-                                                 value="#{fileUpload.listDeviceContent}"
-                                                 paginator="true"
-                                                 rows="10">
-                                        <p:column>
-                                            <f:facet name="header">
-                                                <h:outputText value="Dispositivo" />
-                                            </f:facet>
-                                            <h:outputText value="#{pl.device.name}" />
-                                        </p:column>
-                                        
-                                        <p:column>
-                                            <f:facet name="header">
-                                                <h:outputText value="ID" />
-                                            </f:facet>
-                                            <h:outputText value="#{pl.device.uuid}" />
-                                        </p:column>
-                                    </p:dataTable>
-                                </p:panelGrid>
-                            </p:tab>
-                        </p:accordionPanel>
-                    </p:outputPanel>
-                </p:dialog>
+                    <p:column> 
+                        <f:facet name="header">
+                            <p:outputLabel value="Valido hasta" />
+                        </f:facet>
+                        <p:outputLabel value="#{de.dueDate}" >
+                            <f:convertDateTime type="date" pattern="dd-MM-yyyy"/>
+                        </p:outputLabel>
+                    </p:column>
+
+                    <p:column style="width: 50px; margin: 0px; padding: 0px;">
+                        <f:facet name="header">
+                            <h:outputText styleClass="fa fa-cogs" title="Desactivar contenido"/>
+                        </f:facet>
+                        <p:commandButton title="Desactivar contenido" icon="fa fa-close" actionListener="#{fileUpload.inactiveContent(de.idContent)}" 
+                                         update="@([id$=dtContent])" onclick="PF('block').show()" oncomplete="PF('block').hide()" 
+                                         style="margin: auto; display: block;">
+                            <p:confirm header="Confirmacion" message="Está seguro?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                    </p:column>
+
+                    <p:column style="width: 80px; margin: 0px; padding: 0px;">
+                        <f:facet name="header">
+                            <h:outputText styleClass="fa fa-desktop" title="Terminales relacionadas"/>
+                        </f:facet>
+                        <div style="padding-left: 7px; margin: 0px; display: block;">
+                            <p:commandButton title="Agregar terminales" icon="fa fa-plus" actionListener="#{fileUpload.viewModalCreateContentDevice(de.idContent)}" 
+                                             onclick="PF('block').show()" oncomplete="PF('block').hide()" >
+                                <p:ajax event="dialogReturn" listener="#{fileUpload.onDeviceAdded()}"
+                                    onstart="PF('block').show()" oncomplete="PF('block').hide()"/>
+                            </p:commandButton>
+                            <p:commandButton title="Ver terminales" icon="fa fa-list-ul" actionListener="#{fileUpload.viewModalViewContentDevice(de.idContent)}" 
+                                             onclick="PF('block').show()" oncomplete="PF('block').hide()" />
+                        </div>
+                    </p:column>
+                </p:dataTable>
+
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+
+                <p:blockUI block="@([id$=formContentView])" widgetVar="block" styleClass="zindex-blockui">
+                    Procesando, favor espere...<br />
+                    <p:graphicImage library="img" name="ajaxloadingbar.gif" styleClass="z-index:90000!important;"/>
+                </p:blockUI>
             </h:form>
         </ui:define>
 

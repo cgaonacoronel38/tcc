@@ -9,6 +9,23 @@
 
     <ui:composition  template="/WEB-INF/facelets/template/mainTemplate2.xhtml"> 
         <ui:define name="content">
+            <p:blockUI block="@([id$=formDBView])" widgetVar="blockUIWidget" styleClass="zindex-blockui">
+                Procesando, favor espere...<br />
+                <p:graphicImage library="img" name="ajaxloadingbar.gif" styleClass="z-index:90000!important;"/>
+                <!--<h:graphicImage library="img" name="loading1.gif"/>-->
+            </p:blockUI>
+            
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    blockUIWidget.show();
+                });
+
+                $(window).load(function () {
+                    blockUIWidget.hide();
+                });
+            </script>
+
+            
             <ui:define name="header">
                 <f:metadata>
                     <f:viewParam name="status" value="#{indexUserMB.status}"/>
@@ -31,13 +48,13 @@
                                             icon="fa fa-cloud-upload" 
                                             url="/restricted/upload/fileUpload.tcc"/>
                             </p:submenu>
-                            <p:submenu label="Reportes" icon="fa fa-line-chart">
-                                <p:menuitem value="Audiencias por sitio" 
-                                            icon="fa fa-angle-right" 
-                                            />
+                            <p:submenu label="Dashboard" icon="fa fa-line-chart">
                                 <p:menuitem value="Audiencias" 
                                             icon="fa fa-calendar" 
-                                            url="/restricted/reports/audienceReport.tcc"/>
+                                            url="/restricted/dashboard/deviceDashboard.tcc"/>
+                                <p:menuitem value="Estado terminales" 
+                                            icon="fa fa-calendar" 
+                                            url="/restricted/dashboard/deviceStatus.tcc"/>
                             </p:submenu>
                             <p:submenu label="Administrar" icon="fa fa-wrench" >
                                 <p:menuitem value="Accesos" 

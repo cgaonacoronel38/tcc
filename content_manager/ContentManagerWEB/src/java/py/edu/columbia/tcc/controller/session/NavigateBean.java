@@ -31,7 +31,6 @@ public class NavigateBean implements Serializable{
     
     private final static String FACES_REDIRECT_PARAM = "?faces-redirect=true";
     
-    // Ejemplo : PagoMisCuentas/index.pf
     private final static String NAV_PATH = "%s/%s.%s%s";
     
     private final static String NAV_PATH_RESTRICTED  = "%s/restricted/%s.%s%s";
@@ -39,10 +38,7 @@ public class NavigateBean implements Serializable{
     private String jsfSuffix;
     
     private String currentTitle;
-    
-    //@Inject
-    //private AdvaMaps advaMaps;
-    
+        
     @Inject
     private Config config;
     

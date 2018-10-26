@@ -38,10 +38,10 @@
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>
-    <!--context-param>
+    <context-param>
         <param-name>primefaces.THEME</param-name>
-        <param-value>gt2</param-value>
-    </context-param-->
+        <param-value>custom</param-value>
+    </context-param>
     <context-param>
         <param-name>primefaces.FONT_AWESOME</param-name>
         <param-value>true</param-value>
@@ -65,6 +65,10 @@
         <servlet-name>jersey-serlvet</servlet-name>
         <url-pattern>/rest/*</url-pattern>
     </servlet-mapping>
+    <persistence-context-ref>
+        <persistence-context-ref-name>ContentDS</persistence-context-ref-name>
+        <persistence-unit-name>ContentEJBPU</persistence-unit-name>
+    </persistence-context-ref>
     
     <!-- Acceso denegado a un area restringida -->
     <error-page>
