@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <h:head>
+        <h:outputStylesheet name="css/pf-default.css"/>
+        <style>
+            .center{
+                padding: 0px; 
+                margin: auto; 
+                display:block;
+            }
+        </style>
+    </h:head>
+    <h:body>
+        <h:form>
+            <p:growl id="msgsCP" showDetail="true" autoUpdate="true"/>
+            <p:outputPanel>
+                <p:pickList id="PojoPickList" value="#{createContentDevice.dualModelContentDevices}" var="device" 
+                            itemValue="#{device}" itemLabel="#{device.deviceName} | #{device.locationName} | #{device.city}" showCheckbox="true" responsive="true"
+                            showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" converter="PickListConverter">
+
+                    <f:facet name="sourceCaption">Disponibles</f:facet>
+                    <f:facet name="targetCaption">Seleccionados</f:facet>
+
+                    <p:column>
+                        <h:outputText value="#{device.deviceName} | #{device.locationName} | #{device.city}" />
+                    </p:column>
+                </p:pickList>
+                <p:spacer />
+
+                <h:panelGrid style="width: 100%;">
+                    <p:commandButton value="Confirmar" 
+                                     type="submit" icon="fa fa-plus" 
+                                     actionListener="#{createContentDevice.createDeviceContent()}" 
+                                     styleClass="center"/>
+                </h:panelGrid>
+
+            </p:outputPanel>
+        </h:form>
+    </h:body>
+</html>
+

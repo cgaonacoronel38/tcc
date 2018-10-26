@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <h:head>
+        <title>Dashboard</title>
+        <!--<h:outputStylesheet name="css/contentDashboard.css"/>-->
+        <h:outputStylesheet name="css/pf-default.css"/>
+
+    </h:head>
+    <ui:composition  template="/WEB-INF/facelets/template/gdm.xhtml"> 
+        <ui:define name="content-center"  >
+            <h:outputScript name="js/pdfmake.min.js" />
+            <h:outputScript name="js/vfs_fonts.js" />
+
+            <p:blockUI block="@([id$=formDBView])" widgetVar="blockUIWidget" styleClass="zindex-blockui">
+                Procesando, favor espere...<br />
+                <p:graphicImage library="img" name="ajaxloadingbar.gif" styleClass="z-index:90000!important;"/>
+                <!--<h:graphicImage library="img" name="loading1.gif"/>-->
+            </p:blockUI>
+
+            <script>
+                function exportChartInPDF(title, witget) {
+                    var docDefinition = {
+                        content: [
+                            title,
+                            {
+                                image: $(PF(witget).exportAsImage()).attr('src'),
+                                width: 520
+                            }
+                        ]
+                    }
+                    pdfMake.createPdf(docDefinition).open();
+                    pdfMake.createPdf(docDefinition).download('chart.pdf');
+                }
+            </script>
+
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    blockUIWidget.show();
+                });
+
+                $(window).load(function () {
+                    blockUIWidget.hide();
+                });
+            </script>
+
+            <h:form id="formDBView" style="height: 100%; width: 100%;" >
+                <section id="sectionDashboard" onload="PF('block').show()"  onloadeddata="PF('block').hide()">
+
+
+                    <p:growl id="msgs" showDetail="true" />
+
+                    <!--                Repetir elementos en dashboard
+                                    https://www.primefaces.org/showcase/ui/data/repeat.xhtml-->
+
+                    <p:toolbar>
+                        <f:facet name="left">
+                            <p:commandButton value="Nuevo" icon="fa fa-plus" actionListener="#{deviceDashboard.viewModalCreateChartPanel()}" onclick="PF('block').show()" oncomplete="PF('block').hide()">
+                                <p:ajax event="dialogReturn" listener="#{deviceDashboard.onChartPanelClosed()}" update="@([id$=msgs])  @([id$=board])"
+                                        onstart="PF('block').show()" oncomplete="PF('block').hide()"/>
+                            </p:commandButton>
+                        </f:facet>
+                    </p:toolbar>
+
+                    <h:panelGrid id="pgDBView" rendered="#{deviceDashboard.model != null}"  style="width: 100% !important;">
+                        <p:dashboard id="board" model="#{deviceDashboard.model}" style="width: 100% !important;" >
+                            <p:ajax event="reorder" listener="#{deviceDashboard.handleReorder}" update="@([id$=msgs])  @([id$=board])" />
+
+                            <c:forEach var="dash" items="#{deviceDashboard.listChartPanels}" >
+                                <p:panel id="#{dash.dashboardID}" header="#{dash.title} | Grafico de #{dash.typeAudienceChart}" footer="Grafico de #{dash.typeAudienceChart}" toggleable="true">
+                                    <f:facet name="actions">
+                                        <p:commandLink id="cm#{dash.dashboardID}" 
+                                                       styleClass="ui-panel-titlebar-icon ui-corner-all ui-state-default" title="Eliminar" 
+                                                       actionListener="#{deviceDashboard.deleteChart(dash.dashboardID)}" 
+                                                       update="@([id$=msgs])  @([id$=board])" onclick="PF('block').show()" oncomplete="PF('block').hide()">
+                                            <h:outputText styleClass="ui-icon ui-icon-closethick" />
+                                        </p:commandLink>
+                                        <p:commandLink styleClass="ui-panel-titlebar-icon ui-corner-all ui-state-default" title="Modificar"
+                                                       actionListener="#{deviceDashboard.editDeviceChartPanel(dash.dashboardID)}"
+                                                       update="@([id$=msgs])  @([id$=#{dash.dashboardID}])" onclick="PF('block').show()" oncomplete="PF('block').hide()" >
+                                            <h:outputText styleClass="ui-icon ui-icon-gear" />
+                                            <p:ajax event="dialogReturn" listener="#{deviceDashboard.onChartPanelEdited()}" update="@([id$=msgs])  @([id$=#{dash.dashboardID})" 
+                                                    onstart="PF('block').show()" oncomplete="PF('block').hide()"/>
+                                        </p:commandLink>
+                                        <p:commandLink onclick="exportChartInPDF('#{dash.title}', 'wv#{dash.dashboardID}')" title="Descargar PDF" styleClass="ui-panel-titlebar-icon ui-corner-all ui-state-default">
+                                            <h:outputText styleClass="ui-icon ui-icon-document" />
+                                        </p:commandLink>
+                                        <p:commandLink styleClass="ui-panel-titlebar-icon ui-corner-all ui-state-default" title="Info"
+                                                       actionListener="#{deviceDashboard.viewDeviceChartPanelInfo(dash.dashboardID)}"
+                                                       update="@([id$=msgs])  @([id$=#{dash.dashboardID}])" onclick="PF('block').show()" oncomplete="PF('block').hide()">
+                                            <h:outputText styleClass="ui-icon ui-icon-info" />
+                                            <p:ajax event="dialogReturn" listener="#{deviceDashboard.onChartPanelClosed()}" update="@([id$=msgs])  @([id$=#{dash.dashboardID})" />
+                                        </p:commandLink>
+                                    </f:facet>
+                                    <p:chart type="#{dash.typeChart}" model="#{dash.lineChartModel}" widgetVar="wv#{dash.dashboardID}" rendered="#{dash.lineChartModel != null}"/>
+                                    <p:outputLabel value="No se encontraron datos con la configuración insertada!" style="color: red" rendered="#{dash.lineChartModel == null}" />
+                                </p:panel>
+                            </c:forEach>
+                        </p:dashboard>
+                    </h:panelGrid>
+
+                    <p:poll interval="3" listener="#{deviceDashboard.reloadChartPanelData()}" update="@([id$=pgDBView])" />
+
+                    <p:blockUI block="@([id$=formDBView])" widgetVar="block" styleClass="zindex-blockui">
+                        Procesando, favor espere...<br />
+                        <p:graphicImage library="img" name="ajaxloadingbar.gif" styleClass="z-index:90000!important;"/>
+                        <!--<h:graphicImage library="img" name="loading1.gif"/>-->
+                    </p:blockUI>
+
+
+                    <div style="clear:both" />
+                </section>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
+

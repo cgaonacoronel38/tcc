@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <h:head>
+        <h:outputStylesheet name="css/pf-default.css"/>
+        <style>
+            .inputTextWidth {
+                width: 280px;
+            }
+        </style>
+    </h:head>
+    <h:body>
+        <h:form>
+            <p:growl id="msgsCP" showDetail="true" autoUpdate="true"/>
+            <p:outputPanel>
+                <p:wizard>
+                    <p:tab id="info" title="Información">
+                        <p:panel header="Información de contenido">
+                            <p:messages />
+                            <h:panelGrid columns="2">
+                                <p:outputLabel value="Nombre: " indicateRequired="true" />
+                                <p:inputText value="#{fileUpload.newContent.name}" 
+                                             required="true" 
+                                             requiredMessage="Nombre requerido" 
+                                             title="Nombre" 
+                                             styleClass="inputTextWidth" />
+
+                                <p:outputLabel value="Descripción: *" />
+                                <p:inputTextarea value="#{fileUpload.newContent.description}" rows="6" cols="33" required="true" requiredMessage="Descripción requerida" title="Descripcion" styleClass="inputTextWidth"/>
+
+                                <p:outputLabel value="Duración: *" />
+                                <p:inputNumber id="input3" value="#{fileUpload.newContent.duration}" thousandSeparator="." decimalPlaces="0"  title="Duracion en segundos"  maxValue="300" /> 
+
+                                <p:outputLabel value="Valido hasta: *" />
+                                <p:calendar id="mask" value="#{fileUpload.newContent.dueDate}" pattern="dd/MM/yyyy" mask="true" mindate="today" navigator="true" required="true" requiredMessage="Fecha requerida" title="Valido hasta"/>
+                            </h:panelGrid>
+                        </p:panel>
+                    </p:tab>
+
+                    <p:tab id="address" title="Despliegue">
+                        <p:panel header="Address Details">
+                            <p:messages />
+                            <h:panelGrid columns="1" id="data" style="width: 100%;">
+                                <p:fileUpload fileUploadListener="#{fileUpload.upload}" 
+                                              mode="advanced"
+                                              id="upload"
+                                              required="true"
+                                              fileLimit="1"
+                                              allowTypes="/(\.|\/)(zip)$/"
+                                              invalidFileMessage="Tipo de archivo no válido"
+                                              fileLimitMessage="Solo se permite un archivo por vez"
+                                              requiredMessage="Archivo requerido" 
+                                              update="@([id$=filerename]) @([id$=btnGenerate])"
+                                              style="margin: 5px 0px;width: 100%;" />
+                            </h:panelGrid>
+                        </p:panel>
+                    </p:tab>
+                </p:wizard>
+            </p:outputPanel>
+        </h:form>
+    </h:body>
+</html>
+

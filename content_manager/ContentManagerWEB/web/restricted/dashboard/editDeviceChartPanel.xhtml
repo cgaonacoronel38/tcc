@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <h:head>
+        <h:outputStylesheet name="css/pf-default.css"/>
+    </h:head>
+    <h:body>
+        <h:form id="formEditChartPanel">
+            <p:growl id="msgsCP" showDetail="true" autoUpdate="true"/>
+            <p:outputPanel style="width: 100%; height: 100%;">
+                <h:panelGrid style="padding: 0px; margin: auto;">
+                    <h:panelGrid columns="3" columnClasses="label, value, label">
+                        <h:outputText value="Título: *" />
+                        <p:inputText id="itChartTitle" value="#{editDeviceChartPanel.selectedChartPanel.title}" required="true" requiredMessage="Título requerido!"/>
+                        <p:message for="itChartTitle" />
+
+                        <p:outputLabel value="Tipo de gráfico: "/>
+                        <p:selectOneRadio id="sorTypeChart" value="#{editDeviceChartPanel.selectedTypeChart.idTypeChart}" layout="grid" columns="3" required="true" requiredMessage="Tipo de grafico requerido!">
+                            <f:selectItems value="#{editDeviceChartPanel.listTypeCharts}" var="tc" itemLabel="#{tc.description}" itemValue="#{tc.idTypeChart}"/>
+                        </p:selectOneRadio>
+                        <p:message for="sorTypeChart" />
+
+                        <p:outputLabel value="Periodo: "/>
+                        <p:selectOneRadio id="somTypeTime" value="#{editDeviceChartPanel.selectedTypeTime.idTypeTime}" layout="grid" columns="3" required="true" requiredMessage="Periodo requerido!">
+                            <f:selectItems value="#{editDeviceChartPanel.listTypeTimes}" var="tt" itemLabel="#{tt.description}" itemValue="#{tt.idTypeTime}"/>
+                        </p:selectOneRadio>
+                        <p:message for="somTypeTime" />
+                    </h:panelGrid>
+                    <h:panelGrid columns="1" style="margin-top: 15px; width: 100%;">
+                        <p:commandButton value="Confirmar" type="submit" icon="fa fa-plus" actionListener="#{editDeviceChartPanel.editChartPanel()}" update="@form" style="padding: 0px; margin: auto; display: block;"
+                                         onclick="PF('block').show()" oncomplete="PF('block').hide()">
+                            <f:setPropertyActionListener value="#{editDeviceChartPanel.selectedTypeChart.idTypeChart}" target="#{editDeviceChartPanel.selectedTypeChart.idTypeChart}" />
+                            <f:setPropertyActionListener value="#{editDeviceChartPanel.selectedTypeTime.idTypeTime}" target="#{editDeviceChartPanel.selectedTypeTime.idTypeTime}" />
+                            <f:setPropertyActionListener value="#{editDeviceChartPanel.selectedChartPanel.title}" target="#{editDeviceChartPanel.selectedChartPanel.title}" />
+                        </p:commandButton>
+                    </h:panelGrid>
+                </h:panelGrid>
+
+            </p:outputPanel>
+
+            <p:blockUI block="@([id$=formEditChartPanel])" widgetVar="block" styleClass="zindex-blockui">
+                Procesando, favor espere...<br />
+                <p:graphicImage library="img" name="ajaxloadingbar.gif" />
+                <!--<h:graphicImage library="img" name="loading1.gif"/>-->
+            </p:blockUI>
+        </h:form>
+    </h:body>
+</html>
+

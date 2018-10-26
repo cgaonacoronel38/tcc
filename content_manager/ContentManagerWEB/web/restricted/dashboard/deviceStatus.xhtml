@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <h:head>
+        <title>Dashboard - Estado de dispositivos</title>
+    </h:head>
+    <ui:composition  template="/WEB-INF/facelets/template/gdm.xhtml"> 
+        <ui:define name="content-center">
+            <style>
+                .ui-dashboard-column{
+                    width: 24.5% !important;
+                    padding: 0.25% !important;
+                }
+
+                footer {
+                    height:70px !important; 
+                    position: static !important; 
+                }
+
+                legend {
+                    display: block;
+                    width: 100%;
+                    padding: 0px !important;
+                    margin: 0px !important;
+                    font-size: 1.2em; 
+                    line-height: inherit;
+                    color: green;
+                }
+            </style>
+            <h:form id="formDBView">
+                <p:growl id="msgs" showDetail="true" autoUpdate="true"/>
+                <h:panelGrid id="pgDBView" rendered="#{deviceStatus.model != null}" styleClass="full-width">
+                    <p:dashboard id="board" model="#{deviceStatus.model}" styleClass="full-width">
+                        <c:forEach var="dash" items="#{deviceStatus.listChartPanels}" >
+                            <p:panel id="#{dash.dashboardID}" header="#{dash.title}" styleClass="full-width #{dash.statusClass}" toggleable="true">
+                                <f:facet name="actions">
+                                    <p:commandLink id="cm#{dash.dashboardID}" 
+                                                   styleClass="ui-panel-titlebar-icon ui-corner-all ui-state-default" title="Info" 
+                                                   actionListener="#{deviceStatus.viewModalDeviceInfo(dash)}" update="@([id$=opDlgDeviceInfo])">
+                                        <h:outputText styleClass="ui-icon ui-icon-info" />
+                                        <f:setPropertyActionListener value="#{dash}" target="#{deviceStatus.selectedDeviceStatusBean}" />
+                                    </p:commandLink>
+                                </f:facet>
+                                <h:panelGrid columns="1" styleClass="full-width" >
+                                    <h:panelGrid columns="2" styleClass="color-#{dash.statusClass}">
+                                        <p:outputLabel value="Status: #{dash.deviceStatus} ." title="Status" /> <i class="#{dash.icon}"/>
+                                    </h:panelGrid>
+                                    <p:outputLabel value="Hora servidor: #{dash.serverDate}" />
+                                    <p:outputLabel value="Hora terminal: #{dash.deviceDate}" />
+                                    <p:outputLabel value="Audiencia actual: #{dash.currentAudienceQuantity}" />
+                                    <p:outputLabel value="Contenido actual: #{dash.currentContent}" />
+                                </h:panelGrid>
+
+                                <p:poll interval="3" listener="#{deviceStatus.reloadDBPanel(dash.dashboardID)}" update="@([id$=#{dash.dashboardID}])" />
+                            </p:panel>
+                        </c:forEach>
+                    </p:dashboard>
+
+                </h:panelGrid>
+
+                <p:outputPanel id="opDlgDeviceInfo">
+                    <p:dialog id="dlg" header="Info terminal" widgetVar="dlgDeviceInfo" minHeight="40">
+                        <h:panelGrid columns="1">
+                            <h:outputText value="#{deviceStatus.selectedDeviceStatusBean.device}" />
+                            <h:outputText value="#{deviceStatus.selectedDeviceStatusBean.locationName}" />
+                            <h:outputText value="#{deviceStatus.selectedDeviceStatusBean.locationDescription}" />
+                            <h:outputText value="#{deviceStatus.selectedDeviceStatusBean.country}" />
+                            <h:outputText value="#{deviceStatus.selectedDeviceStatusBean.city}" />
+                        </h:panelGrid>
+                    </p:dialog>
+                </p:outputPanel>
+                <div style="clear:both" />
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
+

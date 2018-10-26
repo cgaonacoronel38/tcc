@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <h:head>
+        <h:outputStylesheet name="css/pf-default.css"/>
+        <style>
+            .inputTextWidth {
+                width: 280px;
+            }
+            .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default, .ui-button, html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:active{
+                background: #044687;
+                border: 1px solid #044687;
+                color: white;
+            }
+        </style>
+    </h:head>
+    <h:body>
+        <h:form>
+            <p:growl id="msgsCP" showDetail="true" autoUpdate="true"/>
+            <p:outputPanel>
+                <p:panelGrid columns="1" id="pgListaDispositivos">
+                    <p:dataTable id="dtDeviceContent"
+                                 rowIndexVar="indexVar"
+                                 var="pl"
+                                 value="#{viewContentDevice.deviceContentList}"
+                                 paginator="true"
+                                 rows="10">
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Terminal" />
+                            </f:facet>
+                            <h:outputText value="#{pl.deviceName}" />
+                        </p:column>
+
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Descripcion terminal" />
+                            </f:facet>
+                            <h:outputText value="#{pl.deviceDescription}" />
+                        </p:column>
+
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Localidad" />
+                            </f:facet>
+                            <h:outputText value="#{pl.locationName}" />
+                        </p:column>
+
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Descripcion localidad" />
+                            </f:facet>
+                            <h:outputText value="#{pl.locationDescription}" />
+                        </p:column>
+
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Cuidad" />
+                            </f:facet>
+                            <h:outputText value="#{pl.city}" />
+                        </p:column>
+
+                        <p:column style="width: 50px; margin: 0px; padding: 0px;">
+                            <f:facet name="header">
+                                <h:outputText styleClass="fa fa-cogs" title="Desactivar contenido"/>
+                            </f:facet>
+                            <p:commandButton title="Desactivar contenido" icon="fa fa-close" actionListener="#{viewContentDevice.inactiveDeviceContent(pl.idDevice)}" 
+                                             update="@([id$=dtDeviceContent]) @([id$=msgsCP])" onclick="PF('block').show()" oncomplete="PF('block').hide()" 
+                                             style="margin: auto; display: block;">
+                                <p:confirm header="Confirmacion" message="Está seguro?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </p:panelGrid>
+
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+
+                <p:blockUI block="@([id$=formContentView])" widgetVar="block" styleClass="zindex-blockui">
+                    Procesando, favor espere...<br />
+                    <p:graphicImage library="img" name="ajaxloadingbar.gif" styleClass="z-index:90000!important;"/>
+                    <!--<h:graphicImage library="img" name="loading1.gif"/>-->
+                </p:blockUI>
+            </p:outputPanel>
+        </h:form>
+    </h:body>
+</html>
+

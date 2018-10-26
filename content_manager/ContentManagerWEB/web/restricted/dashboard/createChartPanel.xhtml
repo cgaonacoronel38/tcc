@@ -1,0 +1,172 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <h:head>
+        <h:outputStylesheet name="css/pf-default.css"/>
+    </h:head>
+    <h:body>
+        <h:form>
+            <p:growl id="msgsCP" showDetail="true" autoUpdate="true"/>
+            <p:outputPanel>
+                <p:wizard id="wzCreateChartPanel" flowListener="#{createChartPanel.onFlowProcess}">
+                    <p:tab id="personal" title="Nuevo panel de graficos">
+                        <p:panel header="Propiedades" style="width:100%; height: 400px; margin: 0px; padding: 0px;" >
+                            <h:panelGrid columns="3" columnClasses="label, value, label">
+                                <h:outputText value="Título: *" />
+                                <p:inputText id="itChartTitle" value="#{createChartPanel.newChartPanel.title}" required="true" requiredMessage="Título requerido!"/>
+                                <p:message for="itChartTitle" />
+
+                                <p:outputLabel value="Tipo de audiencia: "/>
+                                <p:selectOneRadio id="sorTypeFilter" value="#{createChartPanel.selectedTypeFilter.idFilter}" layout="grid" columns="3" required="true" requiredMessage="Tipo de audiencia requerida!">
+                                    <p:ajax event="valueChange" update="@([id$=tabSelectContents])" />
+                                    <f:selectItems value="#{createChartPanel.listTypeFilters}" var="tf" itemLabel="#{tf.description}" itemValue="#{tf.idFilter}"/>
+                                </p:selectOneRadio>
+                                <p:message for="sorTypeFilter" />
+
+                                <p:outputLabel value="Tipo de gráfico: "/>
+                                <p:selectOneRadio id="sorTypeChart" value="#{createChartPanel.selectedTypeChart.idTypeChart}" layout="grid" columns="3" required="true" requiredMessage="Tipo de grafico requerido!">
+                                    <f:selectItems value="#{createChartPanel.listTypeCharts}" var="tc" itemLabel="#{tc.description}" itemValue="#{tc.idTypeChart}"/>
+                                </p:selectOneRadio>
+                                <p:message for="sorTypeChart" />
+
+                                <p:outputLabel value="Periodo: "/>
+                                <p:selectOneRadio id="somTypeTime" value="#{createChartPanel.selectedTypeTime.idTypeTime}" layout="grid" columns="3" required="true" requiredMessage="Periodo requerido!">
+                                    <p:ajax event="valueChange" update="@([id$=pdDateFilter])" />
+                                    <f:selectItems value="#{createChartPanel.listTypeTimes}" var="tt" itemLabel="#{tt.description}" itemValue="#{tt.idTypeTime}"/>
+                                </p:selectOneRadio>
+                                <p:message for="somTypeTime" />
+                            </h:panelGrid>
+
+                            <h:panelGrid id="pdDateFilter" >
+                                <h:panelGrid rendered="#{createChartPanel.selectedTypeTime.idTypeTime == 3}">
+                                    <h:panelGrid columns="3" columnClasses="label, value, label">
+                                        <p:outputLabel value="Desde fecha: "/>
+                                        <p:calendar id="somFromDate" value="#{createChartPanel.fromDate}" pattern="dd-MM-yyyy" navigator="true" mask="true" >
+                                            <p:ajax event="dateSelect" update="@([id$=somToDate])" />
+                                        </p:calendar>
+                                        <p:message for="somFromDate" />
+
+                                        <p:outputLabel value="Hasta fecha: "/>
+                                        <p:calendar id="somToDate" value="#{createChartPanel.toDate}" pattern="dd-MM-yyyy" navigator="true" mask="true">
+                                            <f:attribute name="startDate" value="#{createChartPanel.fromDate}" />
+                                            <f:validator validatorId="primeDateRangeValidator" />
+                                        </p:calendar>
+
+                                        <p:message for="somToDate" />
+                                    </h:panelGrid>
+
+                                </h:panelGrid>
+                            </h:panelGrid>
+                            <h:panelGrid columns="3" columnClasses="label, value, label">
+                                <p:outputLabel value="Tipo zona: "/>
+                                <p:selectOneRadio id="somTypePlace" value="#{createChartPanel.selectedTypePlace.idTypePlace}" layout="grid" columns="3" required="true" requiredMessage="Tipo zona requerida!">
+                                    <f:selectItems value="#{createChartPanel.listTypePlaces}" var="tp" itemLabel="#{tp.description}" itemValue="#{tp.idTypePlace}"/>
+                                </p:selectOneRadio>
+                                <p:message for="somTypePlace" />
+                            </h:panelGrid>
+                        </p:panel>
+                    </p:tab>
+
+                    <p:tab id="tabSelectContents" title="Filtro de contenido" >
+                        <p:panel header="Filtrar contenidos a mostrar" style="width:100%; height: 400px; margin: 0px; padding: 0px;" rendered="#{createChartPanel.selectedTypeFilter.idFilter == 1}">
+
+                            <h:panelGrid columns="2" columnClasses="label, value">
+                                <p:outputLabel for="sbcbtc" value="Filtrar contenidos:" />
+                                <p:selectBooleanCheckbox id="sbcbtc" value="#{createChartPanel.filterContent}">
+                                    <p:ajax update="@([id$=pgSelectContents])" />
+                                </p:selectBooleanCheckbox>
+                            </h:panelGrid>
+
+
+                            <h:panelGroup id="pgSelectContents">
+                                <p:pickList id="plSelectContents"  rendered="#{createChartPanel.filterContent eq true}" value="#{createChartPanel.dualModelContents}"  var="content"
+                                            removeAllLabel="Remover todos" addLabel="Insertar" removeLabel="Remover" addAllLabel="Insertar todos"
+                                            itemValue="#{content}" showCheckbox="true" style="width:100%;" 
+                                            showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" converter="PickListConverter">
+                                    <f:facet name="sourceCaption">Disponibles</f:facet>
+                                    <f:facet name="targetCaption">Seleccionados</f:facet>
+                                    <p:column>
+                                        <h:outputText value="#{content.description}" />
+                                    </p:column>
+                                </p:pickList>
+                            </h:panelGroup>
+                        </p:panel>
+                        <h:panelGrid columns="1"  style="width:100%; height: 400px; margin: 0px; padding: 0px;" rendered="#{createChartPanel.selectedTypeFilter.idFilter != 1}">
+                            <p:outputLabel value="TIPO DE FILTRO NO HABILITADO PARA TIPO DE AUDIENCIA" style="color:red;" />
+                        </h:panelGrid>
+                    </p:tab>
+
+                    <p:tab id="locationFilter" title="Filtro de zonas">
+                        <p:panel header="Filtrar zonas a mostrar" style="width:100%; height: 400px; margin: 0px; padding: 0px;" >
+
+
+                            <h:panelGrid columns="2" columnClasses="label, value">
+                                <p:outputLabel for="sorCTL" value="Tipo zona:" />
+                                <p:selectOneRadio id="sorCTL" value="#{createChartPanel.contentToDisplay}" required="true">
+                                    <f:selectItem itemLabel="Localidad" itemValue="1" />
+                                    <f:selectItem itemLabel="Cuidad" itemValue="2" />
+                                    <p:ajax update="@([id$=pgSelectLocations]) @([id$=plSelectCities])" />
+                                </p:selectOneRadio>
+                            </h:panelGrid>
+
+                            <h:panelGrid columns="2" columnClasses="label, value">
+                                <p:outputLabel for="sbcbtz" value="Filtrar zonas:" />
+                                <p:selectBooleanCheckbox id="sbcbtz" value="#{createChartPanel.filterTipeZone}">
+                                    <p:ajax update="@([id$=pgSelectLocations]) @([id$=plSelectCities])" />
+                                </p:selectBooleanCheckbox>
+                            </h:panelGrid>
+
+
+
+                            <h:panelGroup id="pgSelectLocations">
+                                <p:pickList id="plSelectLocations" value="#{createChartPanel.dualModelLocations}" var="location" rendered="#{createChartPanel.filterTipeZone eq true and createChartPanel.contentToDisplay eq '1'}" 
+                                            removeAllLabel="Remover todos" addLabel="Insertar" removeLabel="Remover" addAllLabel="Insertar todos"
+                                            itemValue="#{location}" showCheckbox="true" responsive="true" style="width:100%;" 
+                                            showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" converter="PickListConverter">
+                                    <f:facet name="sourceCaption">Disponibles</f:facet>
+                                    <f:facet name="targetCaption">Seleccionados</f:facet>
+                                    <p:column>
+                                        <h:outputText value="#{location.description}" />
+                                    </p:column>
+                                </p:pickList>
+
+
+                                <p:pickList id="plSelectCities" value="#{createChartPanel.dualModelCities}" var="city" rendered="#{createChartPanel.filterTipeZone eq true and createChartPanel.contentToDisplay eq '2'}"
+                                            removeAllLabel="Remover todos" addLabel="Insertar" removeLabel="Remover" addAllLabel="Insertar todos"
+                                            itemValue="#{city}" showCheckbox="true" responsive="true" style="width:100%;" 
+                                            showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" converter="PickListConverter">
+                                    <f:facet name="sourceCaption">Disponibles</f:facet>
+                                    <f:facet name="targetCaption">Seleccionados</f:facet>
+                                    <p:column>
+                                        <h:outputText value="#{city.description}" />
+                                    </p:column>
+                                </p:pickList>
+
+                            </h:panelGroup>
+                        </p:panel>
+                    </p:tab>
+
+                    <p:tab id="tabConfirm" title="Confirmar">
+                        <p:panel header="Confirmar datos de grafico" style="width:100%; height: 400px; margin: 0px; padding: 0px;" >
+                            <p:commandButton value="Confirmar" type="submit" icon="fa fa-plus" actionListener="#{createChartPanel.createChartPanel()}" update="@form" >
+                                <f:setPropertyActionListener value="#{createChartPanel.selectedTypeChart}" target="#{createChartPanel.selectedTypeChart}" />
+                                <f:setPropertyActionListener value="#{createChartPanel.selectedTypeTime}" target="#{createChartPanel.selectedTypeTime}" />
+                                <f:setPropertyActionListener value="#{createChartPanel.selectedTypePlace}" target="#{createChartPanel.selectedTypePlace}" />
+                                <f:setPropertyActionListener value="#{createChartPanel.selectedTypeFilter}" target="#{createChartPanel.selectedTypeFilter}" />
+                                <f:setPropertyActionListener value="#{createChartPanel.dualModelContents}" target="#{createChartPanel.dualModelContents}" />
+                                <f:setPropertyActionListener value="#{createChartPanel.dualModelLocations}" target="#{createChartPanel.dualModelLocations}" />
+                                <f:setPropertyActionListener value="#{createChartPanel.dualModelCities}" target="#{createChartPanel.dualModelCities}" />
+                            </p:commandButton>
+                        </p:panel>
+                    </p:tab>
+                </p:wizard>
+            </p:outputPanel>
+        </h:form>
+    </h:body>
+</html>
+

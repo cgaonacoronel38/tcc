@@ -1,0 +1,144 @@
+.ui-dashboard-column{
+    width: 24.5% !important;
+    padding: 0.25% !important;
+}
+
+.ui-widget, .ui-widget .ui-widget {
+    font-size: 96%;
+}
+
+.ui-bg-rowcolor {
+    background-color: #d6e9c6;
+}
+
+.ui-growl{
+    z-index:11000!important;
+}
+
+.ui-inputtext, .ui-inputfield{
+    border: 1px solid #09437b!important; 
+    background: #ffffff url("/tcc/javax.faces.resource/images/ui-bg_diamond_40_d5d5d5_10x8.png.tcc?ln=primefaces-custom") 50% 50% repeat!important;
+    color: #2d2b2b!important;
+    box-shadow: 0px 0px 1px black!important;
+    margin: 3px!important;
+}
+
+.ui-input-invalid {
+    color:red;
+    border: 1px solid red;
+    opacity: 1!important;
+}
+
+.ui-input-success {
+    color:darkgreen!important;
+    border: 1px solid darkgreen!important;
+    opacity: 1!important;
+}
+
+.ui-messages{
+    font-size: 1.1em!important;
+}
+
+.ui-message-error,.ui-message{
+    margin: 0px!important;
+    padding: 0px!important;
+    color: red!important;
+    font-size: 1em!important;
+    background-color: transparent!important;
+    border: 0px!important;
+    border-color: transparent!important;
+}
+
+.ui-message-error-icon{
+    background-image: none!important;
+    display: none!important;
+}
+
+.ui-selectonemenu{
+    background: none!important;
+    border: 0px!important;
+}
+
+.ui-selectonemenu-trigger{
+    width: 22px!important;
+    padding: 0px!important;
+    border: 0px!important;
+    height: 95%!important;
+}
+
+.dtInvoices{
+    width: 300px;
+}
+
+.invoiceOverdue{
+    color: red!important;
+}
+
+.ui-state-error{
+    border: 1px solid red;
+}
+
+.ui-fileupload-files tbody tr td{
+    max-width: 320px!important;
+    display: block;
+}
+
+.ui-inputswitch{
+    width: 60px!important;
+}
+
+.ui-chkbox-box{
+    margin-left: 4px!important;
+}
+
+.ui-state-disabled{
+    opacity: 1!important;
+}
+
+.ui-dashboard-column{
+    width: 24.5% !important;
+    padding: 0.25% !important;
+}
+
+.ui-widget-content{
+    margin: 5px !important;  
+}
+
+.ui-dialog {
+    z-index: 1100 !important;
+}
+
+/*asdf*/
+
+.ui-panel-titlebar-icon{
+    background-color: #044687 !important;
+}
+
+.ui-button .ui-icon{
+    background-image: url(/tcc/javax.faces.resource/images/ui-icons_444444_256x240.png.tcc?ln=primefaces-custom);
+}
+
+.ui-button .ui-icon:hover{
+    background-image: url(/tcc/javax.faces.resource/images/ui-icons_ffffff_256x240.png.tcc?ln=primefaces-custom) !important;
+}
+
+.ui-state-highlight .ui-icon, .ui-button .ui-state-highlight.ui-icon{
+    background-image: url(/tcc/javax.faces.resource/images/ui-icons_ffffff_256x240.png.tcc?ln=primefaces-custom);
+}
+
+.ui-widget-header .ui-state-default, html .ui-button.ui-state-disabled:active{
+    border: 1px solid #F5F5F5 !important;
+}
+
+.ui-widget-header .ui-state-default, html .ui-button.ui-state-disabled:hover{
+    border: 1px solid #FFFFFF !important;
+}
+
+.ui-dashboard-column{
+    width: 100%;
+}
+
+footer {
+    height:70px !important; 
+    position: static !important; 
+}
