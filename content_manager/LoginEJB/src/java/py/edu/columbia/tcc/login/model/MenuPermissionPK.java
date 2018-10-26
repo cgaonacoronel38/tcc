@@ -19,9 +19,11 @@ import javax.validation.constraints.NotNull;
 public class MenuPermissionPK implements Serializable {
 
     @Basic(optional = false)
+    @NotNull
     @Column(name = "id_role")
     private long idRole;
     @Basic(optional = false)
+    @NotNull
     @Column(name = "id_menu")
     private long idMenu;
 

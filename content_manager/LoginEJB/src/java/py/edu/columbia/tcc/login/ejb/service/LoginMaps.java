@@ -56,13 +56,10 @@ public class LoginMaps {
         SysParam sp = null;
 
         if (mParams != null && !mParams.isEmpty()) {
-            log.info("obebiendp jsf: " + key);
             sp = mParams.get(key);
-            log.info(sp.getValue());
         }
 
         if (sp == null) {
-            log.info(key);
             log.error("El parámetro no existe, clave: {}", key);
 
             throw new Exception(String.format("El parámetro de sistema no existe,  clave: %s", key));
@@ -80,7 +77,6 @@ public class LoginMaps {
             for (SysParam param : l) {
                 paramEJB.detached(param);
 
-                log.info("parametro " + param.getKey());
 
                 mParams.put(param.getKey(),
                         param);
@@ -102,8 +98,6 @@ public class LoginMaps {
             for (Company company : l) {
                 compEJB.detached(company);
 
-                log.info("parametro " + company.getIdCompany());
-
                 mComps.put(company.getIdCompany().toString(),
                         company);
             }
@@ -120,7 +114,6 @@ public class LoginMaps {
         //modificado 201610090
         if (mComps != null && !mComps.isEmpty()) {
             comp = mComps.get("1");
-            log.info("Default company " + comp.getName());
         }
 
         if (comp == null) {

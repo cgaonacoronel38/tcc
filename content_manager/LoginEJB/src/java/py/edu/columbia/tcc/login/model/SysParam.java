@@ -32,14 +32,19 @@ public class SysParam implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "id_param", insertable = false, updatable = false)
+    @Column(name = "id_param")
     private Integer idParam;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 50)
     @Column(name = "key")
     private String key;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 200)
     @Column(name = "value")
     private String value;
+    @Size(max = 200)
     @Column(name = "description")
     private String description;
 

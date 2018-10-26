@@ -10,6 +10,8 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -28,18 +30,20 @@ public class MenuPermission implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected MenuPermissionPK menuPermissionPK;
-    @Basic(optional = false)
     @Column(name = "access")
     private boolean access;
-    @Basic(optional = false)
     @Column(name = "insert")
     private boolean insert;
-    @Basic(optional = false)
     @Column(name = "update")
     private boolean update;
-    @Basic(optional = false)
     @Column(name = "report")
     private boolean report;
+    @JoinColumn(name = "id_menu", referencedColumnName = "id_menu", insertable = false, updatable = false)
+    @ManyToOne(optional = false)
+    private Menu menu;
+    @JoinColumn(name = "id_role", referencedColumnName = "id_role", insertable = false, updatable = false)
+    @ManyToOne(optional = false)
+    private Role role;
 
     public MenuPermission() {
     }
@@ -98,6 +102,22 @@ public class MenuPermission implements Serializable {
 
     public void setReport(boolean report) {
         this.report = report;
+    }
+
+    public Menu getMenu() {
+        return menu;
+    }
+
+    public void setMenu(Menu menu) {
+        this.menu = menu;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     @Override

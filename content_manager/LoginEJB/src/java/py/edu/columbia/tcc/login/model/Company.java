@@ -35,23 +35,26 @@ public class Company implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "id_company", insertable = false, updatable = false)
+    @Column(name = "id_company")
     private Integer idCompany;
-    @Basic(optional = false)
+    @Size(min = 1, max = 100)
     @Column(name = "name")
     private String name;
+    @Size(max = 200)
     @Column(name = "address")
     private String address;
+    @Size(max = 20)
     @Column(name = "ruc")
     private String ruc;
     // @Pattern(regexp="^\\(?(\\d{3})\\)?[- ]?(\\d{3})[- ]?(\\d{4})$", message="Formato tel./fax. invalido, debe ser xxx-xxx-xxxx")//if the field contains phone or fax number consider using this annotation to enforce field validation
+    @Size(max = 20)
     @Column(name = "phone")
     private String phone;
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Correo electrónico no válido")//if the field contains email address consider using this annotation to enforce field validation
+    @Size(max = 200)
     @Column(name = "email")
     private String email;
-    @Basic(optional = false)
-    @Column(name = "active", insertable = false)
+    @Column(name = "active")
     private boolean active;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idCompany")
     private List<User> userList;

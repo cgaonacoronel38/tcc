@@ -38,14 +38,21 @@ public class Role implements Serializable {
     @Column(name = "id_role")
     private Integer idRole;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 40)
     @Column(name = "description")
     private String description;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 100)
     @Column(name = "realmgroupname")
     private String realmgroupname;
     @Basic(optional = false)
+    @NotNull
     @Column(name = "sys_role")
     private boolean sysRole;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "role")
+    private List<MenuPermission> menuPermissionList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idRole")
     private List<User> userList;
 
@@ -93,6 +100,14 @@ public class Role implements Serializable {
 
     public void setSysRole(boolean sysRole) {
         this.sysRole = sysRole;
+    }
+
+    public List<MenuPermission> getMenuPermissionList() {
+        return menuPermissionList;
+    }
+
+    public void setMenuPermissionList(List<MenuPermission> menuPermissionList) {
+        this.menuPermissionList = menuPermissionList;
     }
 
     public List<User> getUserList() {

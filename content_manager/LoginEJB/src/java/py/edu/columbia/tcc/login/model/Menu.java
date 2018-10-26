@@ -6,7 +6,9 @@
 package py.edu.columbia.tcc.login.model;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,6 +16,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -34,21 +37,21 @@ public class Menu implements Serializable {
     @Basic(optional = false)
     @Column(name = "id_menu")
     private Integer idMenu;
-    @Basic(optional = false)
+    @Size(max = 100)
     @Column(name = "name")
     private String name;
-    @Basic(optional = false)
+    @Size(max = 100)
     @Column(name = "description")
     private String description;
-    @Basic(optional = false)
+    @Size(max = 200)
     @Column(name = "url")
     private String url;
-    @Basic(optional = false)
     @Column(name = "active")
     private boolean active;
-    @Basic(optional = false)
     @Column(name = "sys_menu")
     private boolean sysMenu;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "menu")
+    private List<MenuPermission> menuPermissionList;
 
     public Menu() {
     }
@@ -112,6 +115,14 @@ public class Menu implements Serializable {
 
     public void setSysMenu(boolean sysMenu) {
         this.sysMenu = sysMenu;
+    }
+
+    public List<MenuPermission> getMenuPermissionList() {
+        return menuPermissionList;
+    }
+
+    public void setMenuPermissionList(List<MenuPermission> menuPermissionList) {
+        this.menuPermissionList = menuPermissionList;
     }
 
     @Override
