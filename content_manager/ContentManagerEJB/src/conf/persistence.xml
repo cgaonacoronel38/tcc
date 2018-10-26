@@ -3,6 +3,12 @@
   <persistence-unit name="ContentEJBPU" transaction-type="JTA">
     <jta-data-source>java:/jboss/datasources/ContentDS</jta-data-source>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
-    <properties/>
+    <properties>
+<!--         <property name="hibernate.show_sql" value="true"/>  
+         <property name="hibernate.format_sql" value="true"/>  
+         <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/> -->
+<!--         <property name="eclipselink.logging.level" value="FINE"/>
+         <property name="eclipselink.logging.parameters" value="true"/>-->
+      </properties>
   </persistence-unit>
 </persistence>

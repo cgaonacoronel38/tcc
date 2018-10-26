@@ -3,37 +3,22 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package py.edu.columbia.tcc.model.bean;
+package py.edu.columbia.tcc.ejb.jpa.bean.ws;
 
+import java.util.Date;
 import java.util.UUID;
 
 /**
  *
  * @author tokio
  */
-public class ContentBean {
-    private Integer idContent;
-    private long idCompany;
+public class DeviceContentBean {
     private String name;
     private String description; 
     private UUID uuid;
-
-    public Integer getIdContent() {
-        return idContent;
-    }
-
-    public void setIdContent(Integer idContent) {
-        this.idContent = idContent;
-    }
-
-    public long getIdCompany() {
-        return idCompany;
-    }
-
-    public void setIdCompany(long idCompany) {
-        this.idCompany = idCompany;
-    }
-
+    private Integer duration;
+    private Date dueDate;
+    
     public String getName() {
         return name;
     }
@@ -56,5 +41,21 @@ public class ContentBean {
 
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
+    }
+
+    public Integer getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Integer duration) {
+        this.duration = duration;
+    }
+
+    public Date getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
     }
 }

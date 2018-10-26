@@ -6,7 +6,7 @@
 package py.edu.columbia.tcc.ejb.jpa.content;
 
 import py.edu.columbia.tcc.exception.GDMEJBException;
-import py.edu.columbia.tcc.model.content.Location;
+import py.edu.columbia.tcc.model.contentHandler.Location;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.Query;

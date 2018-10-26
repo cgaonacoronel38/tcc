@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package py.edu.columbia.tcc.model.content;
+package py.edu.columbia.tcc.model.contentHandler;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -20,7 +20,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -39,14 +38,14 @@ public class City implements Serializable {
     @Basic(optional = false)
     @Column(name = "id_city")
     private Integer idCity;
-    @Basic(optional = false)
+    @Size(max = 100)
     @Column(name = "description")
     private String description;
     @JoinColumn(name = "id_country", referencedColumnName = "id_country")
     @ManyToOne(optional = false)
     private Country idCountry;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idCity")
-    private Collection<Location> locationCollection;
+    private List<Location> locationList;
 
     public City() {
     }
@@ -84,12 +83,12 @@ public class City implements Serializable {
         this.idCountry = idCountry;
     }
 
-    public Collection<Location> getLocationCollection() {
-        return locationCollection;
+    public List<Location> getLocationList() {
+        return locationList;
     }
 
-    public void setLocationCollection(Collection<Location> locationCollection) {
-        this.locationCollection = locationCollection;
+    public void setLocationList(List<Location> locationList) {
+        this.locationList = locationList;
     }
 
     @Override
@@ -114,7 +113,7 @@ public class City implements Serializable {
 
     @Override
     public String toString() {
-        return "py.edu.columbia.tcc.model.content.City[ idCity=" + idCity + " ]";
+        return idCity.toString();
     }
     
 }

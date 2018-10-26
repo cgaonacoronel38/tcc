@@ -81,7 +81,7 @@ public class DeviceContentJDBCFacade {
                 try {
                     conn.close();
                 } catch (SQLException ex) {
-                    Logger.getLogger(AudienceJDBCFacade.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(DeviceContentJDBCFacade.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -108,7 +108,7 @@ public class DeviceContentJDBCFacade {
                 try {
                     conn.close();
                 } catch (SQLException ex) {
-                    Logger.getLogger(AudienceJDBCFacade.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(DeviceContentJDBCFacade.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }

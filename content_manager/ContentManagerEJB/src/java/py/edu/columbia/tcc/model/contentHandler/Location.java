@@ -3,11 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package py.edu.columbia.tcc.model.content;
+package py.edu.columbia.tcc.model.contentHandler;
 
+import py.edu.columbia.tcc.model.contentHandler.Device;
+import py.edu.columbia.tcc.model.contentHandler.Country;
+import py.edu.columbia.tcc.model.contentHandler.City;
 import java.io.Serializable;
-import java.util.Collection;
-import javax.persistence.Basic;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,7 +22,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -36,16 +37,18 @@ public class Location implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
     @Column(name = "id_location")
     private Integer idLocation;
-    @Basic(optional = false)
+    @Size(max = 100)
     @Column(name = "name")
     private String name;
-    @Column(name = "location")
-    private String location;
+    @Size(max = 600)
+    @Column(name = "description")
+    private String description;
+    @Size(max = 30)
     @Column(name = "latitude")
     private String latitude;
+    @Size(max = 30)
     @Column(name = "longitude")
     private String longitude;
     @JoinColumn(name = "id_city", referencedColumnName = "id_city")
@@ -55,7 +58,7 @@ public class Location implements Serializable {
     @ManyToOne(optional = false)
     private Country idCountry;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idLocation")
-    private Collection<Device> deviceCollection;
+    private List<Device> deviceList;
 
     public Location() {
     }
@@ -85,12 +88,12 @@ public class Location implements Serializable {
         this.name = name;
     }
 
-    public String getLocation() {
-        return location;
+    public String getDescription() {
+        return description;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getLatitude() {
@@ -125,12 +128,12 @@ public class Location implements Serializable {
         this.idCountry = idCountry;
     }
 
-    public Collection<Device> getDeviceCollection() {
-        return deviceCollection;
+    public List<Device> getDeviceList() {
+        return deviceList;
     }
 
-    public void setDeviceCollection(Collection<Device> deviceCollection) {
-        this.deviceCollection = deviceCollection;
+    public void setDeviceList(List<Device> deviceList) {
+        this.deviceList = deviceList;
     }
 
     @Override
@@ -155,7 +158,7 @@ public class Location implements Serializable {
 
     @Override
     public String toString() {
-        return "py.edu.columbia.tcc.model.content.Location[ idLocation=" + idLocation + " ]";
+        return idLocation.toString();
     }
     
 }

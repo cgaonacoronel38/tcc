@@ -5,59 +5,32 @@
  */
 package py.edu.columbia.tcc.model.bean;
 
-import java.util.Date;
-
 /**
  *
  * @author tokio
  */
 public class AudienceBean {
-    private Long idAudience;
-    private Long idDevice;
-    private Integer quantity;
-    private Date deviceDate;
-    private Date serverDate;
+    private String reference;
+    private Long quantity;
 
-    public AudienceBean() {
-    }
-
-    public Long getIdAudience() {
-        return idAudience;
-    }
-
-    public void setIdAudience(Long idAudience) {
-        this.idAudience = idAudience;
-    }
-
-    public Long getIdDevice() {
-        return idDevice;
-    }
-
-    public void setIdDevice(Long idDevice) {
-        this.idDevice = idDevice;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
+    public AudienceBean(String reference, Long quantity) {
+        this.reference = reference;
         this.quantity = quantity;
     }
 
-    public Date getDeviceDate() {
-        return deviceDate;
+    public String getReference() {
+        return reference;
     }
 
-    public void setDeviceDate(Date deviceDate) {
-        this.deviceDate = deviceDate;
+    public void setReference(String reference) {
+        this.reference = reference;
     }
 
-    public Date getServerDate() {
-        return serverDate;
+    public Long getQuantity() {
+        return quantity;
     }
 
-    public void setServerDate(Date serverDate) {
-        this.serverDate = serverDate;
+    public void setQuantity(Long quantity) {
+        this.quantity = quantity;
     }
 }

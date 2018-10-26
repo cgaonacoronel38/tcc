@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package py.edu.columbia.tcc.model.content;
+package py.edu.columbia.tcc.model.contentHandler;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
@@ -16,23 +16,31 @@ import javax.validation.constraints.NotNull;
  * @author tokio
  */
 @Embeddable
-public class DeviceContentPK implements Serializable {
+public class AudiencesPK implements Serializable {
 
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "id_audience")
+    private long idAudience;
     @Basic(optional = false)
     @NotNull
     @Column(name = "id_device")
     private long idDevice;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "id_content")
-    private long idContent;
 
-    public DeviceContentPK() {
+    public AudiencesPK() {
     }
 
-    public DeviceContentPK(long idDevice, long idContent) {
+    public AudiencesPK(long idAudience, long idDevice) {
+        this.idAudience = idAudience;
         this.idDevice = idDevice;
-        this.idContent = idContent;
+    }
+
+    public long getIdAudience() {
+        return idAudience;
+    }
+
+    public void setIdAudience(long idAudience) {
+        this.idAudience = idAudience;
     }
 
     public long getIdDevice() {
@@ -43,33 +51,25 @@ public class DeviceContentPK implements Serializable {
         this.idDevice = idDevice;
     }
 
-    public long getIdContent() {
-        return idContent;
-    }
-
-    public void setIdContent(long idContent) {
-        this.idContent = idContent;
-    }
-
     @Override
     public int hashCode() {
         int hash = 0;
+        hash += (int) idAudience;
         hash += (int) idDevice;
-        hash += (int) idContent;
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof DeviceContentPK)) {
+        if (!(object instanceof AudiencesPK)) {
             return false;
         }
-        DeviceContentPK other = (DeviceContentPK) object;
+        AudiencesPK other = (AudiencesPK) object;
+        if (this.idAudience != other.idAudience) {
+            return false;
+        }
         if (this.idDevice != other.idDevice) {
-            return false;
-        }
-        if (this.idContent != other.idContent) {
             return false;
         }
         return true;
@@ -77,7 +77,7 @@ public class DeviceContentPK implements Serializable {
 
     @Override
     public String toString() {
-        return "py.edu.columbia.tcc.model.content.DeviceContentPK[ idDevice=" + idDevice + ", idContent=" + idContent + " ]";
+        return "py.edu.columbia.tcc.model.AudiencesPK[ idAudience=" + idAudience + ", idDevice=" + idDevice + " ]";
     }
     
 }

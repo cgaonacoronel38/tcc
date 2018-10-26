@@ -29,37 +29,38 @@ import py.edu.columbia.tcc.setup.AppSetup;
  * @author tokio
  */
 public abstract class AbstractFacade<T> {
+
     protected final static Logger log = LoggerFactory.getLogger(AbstractFacade.class);
-    
+
     @PersistenceContext(unitName = "ContentEJBPU")
-    private EntityManager emMaster;  
-    
+    private EntityManager emMaster;
+
     private Class<T> entityClass;
-    
-    private Validator validator;   
-    
+
+    private Validator validator;
+
     public AbstractFacade(Class<T> entityClass) {
         this.entityClass = entityClass;
     }
-    
+
     protected Validator getValidator() throws GDMConfigException, GDMEJBException, Exception {
-        if(validator == null) {
+        if (validator == null) {
             AppSetup as = ResourceManager.getInstance().getAppSetup();
-            
+
             this.validator = PersistenceManager.getInstance(as.getPuMaster())
-                    .getValidatorFactory().getValidator();            
+                    .getValidatorFactory().getValidator();
         }
-        
+
         return validator;
     }
-    
+
     protected EntityManager getEntityManager() {
         if (emMaster == null) {
             log.error("El/los entitymanagers no pudieron crearse.");
-                
+
             return null;
         }
-        
+
         try {
             AppSetup as = ResourceManager.getInstance().getAppSetup();
 
@@ -69,8 +70,8 @@ public abstract class AbstractFacade<T> {
         }
 
         return null;
-    }    
-    
+    }
+
     /*
     public EntityManager getEntityManagerFactory() {
         if(em == null) {
@@ -83,24 +84,23 @@ public abstract class AbstractFacade<T> {
         }
         return em; 
     }
-    */
-    
+     */
     public void create(T entity) throws ConstraintViolationException, GDMEJBException {
-        try{
+        try {
             //validate(entity);
             getEntityManager().persist(entity);
             getEntityManager().flush();
-        } catch(Exception ex){
-            throw new GDMEJBException("Error al insertar entidad"+ex.getLocalizedMessage());
+        } catch (Exception ex) {
+            throw new GDMEJBException("Error al insertar entidad" + ex.getLocalizedMessage());
         }
     }
-    
+
     public T refresh(T entity) throws ConstraintViolationException, GDMEJBException {
-        try{
+        try {
             getEntityManager().refresh(entity);
             return entity;
-        } catch(Exception ex){
-            throw new GDMEJBException("Error al insertar entidad"+ex.getLocalizedMessage());
+        } catch (Exception ex) {
+            throw new GDMEJBException("Error al insertar entidad" + ex.getLocalizedMessage());
         }
     }
 
@@ -109,10 +109,19 @@ public abstract class AbstractFacade<T> {
         getEntityManager().merge(entity);
         getEntityManager().flush();
     }
+    
+    public T merge(T entity) throws ConstraintViolationException, GDMEJBException {
+        return getEntityManager().merge(entity);
+    }
 
     public void remove(T entity) {
-        getEntityManager().remove(getEntityManager().merge(entity));
+        //getEntityManager().getTransaction().begin();
+        getEntityManager().merge(entity);
+//        getEntityManager().flush();
+        getEntityManager().remove(entity);
+        //getEntityManager().merge(entity);
         getEntityManager().flush();
+        //getEntityManager().getTransaction().commit();
     }
 
     public T find(Object id) {
@@ -125,18 +134,16 @@ public abstract class AbstractFacade<T> {
         javax.persistence.criteria.CriteriaQuery q = cb.createQuery();
         Root<T> root = q.from(entityClass);
         q.select(root);
-        
+
         //q.where("((?1 = TRUE AND s.active = TRUE) OR ?2 = FALSE) ");
-        
         //q.w
-        
         return null;
     }
-    
+
     public List<T> findAll() {
         return findAll(null);
     }
-    
+
     public List<T> findAll(String[] fieldsOrderBy) {
         javax.persistence.criteria.CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         javax.persistence.criteria.CriteriaQuery q = cb.createQuery();
@@ -145,23 +152,27 @@ public abstract class AbstractFacade<T> {
 
         // Resolviendo el order by pro varios campos, todos ascendentes :)
         List<Order> orders = null;
-        if(fieldsOrderBy != null) {
-            for(int i = 0; i < fieldsOrderBy.length; i++) {
-                if(fieldsOrderBy[i] != null && !fieldsOrderBy[i].trim().isEmpty()) {
-                    if(i == 0) orders = new ArrayList<Order>();
-                    if(root.get(fieldsOrderBy[i]) != null) {
+        if (fieldsOrderBy != null) {
+            for (int i = 0; i < fieldsOrderBy.length; i++) {
+                if (fieldsOrderBy[i] != null && !fieldsOrderBy[i].trim().isEmpty()) {
+                    if (i == 0) {
+                        orders = new ArrayList<Order>();
+                    }
+                    if (root.get(fieldsOrderBy[i]) != null) {
                         orders.add(cb.asc(root.get(fieldsOrderBy[i])));
                     } else {
                         log.warn("El campo {} no es atributo de la entidad {}, no se incluye en el order by.",
-                                 fieldsOrderBy[i],
-                                 entityClass.getSimpleName());
+                                fieldsOrderBy[i],
+                                entityClass.getSimpleName());
                     }
                 }
             }
         }
-        
-        if(orders != null && orders.size() > 0) q.orderBy(orders);
-        
+
+        if (orders != null && orders.size() > 0) {
+            q.orderBy(orders);
+        }
+
         return getEntityManager().createQuery(q).getResultList();
     }
 
@@ -181,75 +192,75 @@ public abstract class AbstractFacade<T> {
         javax.persistence.Query q = getEntityManager().createQuery(cq);
         return ((Long) q.getSingleResult()).intValue();
     }
-    
+
     protected void validate(T entity) throws ConstraintViolationException, GDMEJBException {
         Set<ConstraintViolation<T>> validationErrors = null;
         Set<ConstraintViolation<?>> constraintErrors = null;
-        String debug = "\nError %s-CONSTRAINT, %s - %s: %s [%s] [%s]";  
+        String debug = "\nError %s-CONSTRAINT, %s - %s: %s [%s] [%s]";
         List<String> msgs = null;
         StringBuilder msg = new StringBuilder("");
-        
+
         try {
             //Obteniendo los errores de validación
             validationErrors = getValidator().validate(entity);
 
-            if(validationErrors.isEmpty()) {
+            if (validationErrors.isEmpty()) {
                 log.info(String.format("La entidad [%s] fue validada exitósamente.", entity.getClass().getSimpleName()));
             } else {
                 log.error(String.format("Se presentaron errores al validar la entidad [%s].", entity.getClass().getSimpleName()));
 
                 msgs = new ArrayList<String>();
                 msg.append("Se presentaron errores al validar la entidad [")
-                   .append(entity.getClass().getSimpleName()).append("].");
+                        .append(entity.getClass().getSimpleName()).append("].");
 
                 int count = 0;
-                for(ConstraintViolation<T> errors: validationErrors) {
+                for (ConstraintViolation<T> errors : validationErrors) {
                     count++;
                     ConstraintDescriptor cd = errors.getConstraintDescriptor();
                     msg.append(String.format(debug, "JPA", count, errors.getPropertyPath(), errors.getMessage(), errors.getInvalidValue(), cd.getAnnotation()));
                     msgs.add(String.format(debug, "JPA", count, errors.getPropertyPath(), errors.getMessage(), errors.getInvalidValue(), cd.getAnnotation()));
                 }
-                
+
                 log.error(msg.toString());
-                
+
                 throw new GDMEJBException(msg.toString(), msgs);
-            }            
-        } catch (Exception ex) {    
-            if(ex instanceof ConstraintViolationException) { //Constraint-Error de base de datos
+            }
+        } catch (Exception ex) {
+            if (ex instanceof ConstraintViolationException) { //Constraint-Error de base de datos
                 ConstraintViolationException violationEx = (ConstraintViolationException) ex.getCause();
                 constraintErrors = violationEx.getConstraintViolations();
-                
+
                 msgs = new ArrayList<String>();
                 msg.append("Se presentaron errores al validar la entidad [")
-                   .append(entity.getClass().getSimpleName()).append("].");                
-                
+                        .append(entity.getClass().getSimpleName()).append("].");
+
                 int count = 0;
-                for(ConstraintViolation<?> constraint: constraintErrors) {
+                for (ConstraintViolation<?> constraint : constraintErrors) {
                     ConstraintDescriptor desc = constraint.getConstraintDescriptor();
                     String str = String.format(debug,
-                                               count,
-                                               "SQL",
-                                                constraint.getPropertyPath(),
-                                                constraint.getMessage(),
-                                                constraint.getInvalidValue(),
-                                                desc.getAnnotation());
+                            count,
+                            "SQL",
+                            constraint.getPropertyPath(),
+                            constraint.getMessage(),
+                            constraint.getInvalidValue(),
+                            desc.getAnnotation());
                     msg.append(str);
                     msgs.add(str);
                 }
 
                 log.error(msg.toString());
-                
+
                 throw new GDMEJBException(msg.toString(), msgs);
-            } else if(ex instanceof GDMEJBException) {
+            } else if (ex instanceof GDMEJBException) {
                 throw (GDMEJBException) ex;
-            } else {    
+            } else {
                 throw new GDMEJBException(String.format("Error desconocido en validación de entidad [%s]", entity.getClass().getSimpleName()),
-                                          ex);
+                        ex);
             }
         }
     }
-    
+
     public void detached(T t) {
         getEntityManager().detach(t);
-    }    
+    }
 }

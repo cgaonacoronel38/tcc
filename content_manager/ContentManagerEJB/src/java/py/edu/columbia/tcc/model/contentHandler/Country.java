@@ -3,10 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package py.edu.columbia.tcc.model.content;
+package py.edu.columbia.tcc.model.contentHandler;
 
+import py.edu.columbia.tcc.model.contentHandler.City;
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -34,16 +35,15 @@ public class Country implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
     @Column(name = "id_country")
     private Integer idCountry;
-    @Basic(optional = false)
+    @Size(max = 100)
     @Column(name = "description")
     private String description;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idCountry")
-    private Collection<City> cityCollection;
+    private List<City> cityList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idCountry")
-    private Collection<Location> locationCollection;
+    private List<Location> locationList;
 
     public Country() {
     }
@@ -73,20 +73,20 @@ public class Country implements Serializable {
         this.description = description;
     }
 
-    public Collection<City> getCityCollection() {
-        return cityCollection;
+    public List<City> getCityList() {
+        return cityList;
     }
 
-    public void setCityCollection(Collection<City> cityCollection) {
-        this.cityCollection = cityCollection;
+    public void setCityList(List<City> cityList) {
+        this.cityList = cityList;
     }
 
-    public Collection<Location> getLocationCollection() {
-        return locationCollection;
+    public List<Location> getLocationList() {
+        return locationList;
     }
 
-    public void setLocationCollection(Collection<Location> locationCollection) {
-        this.locationCollection = locationCollection;
+    public void setLocationList(List<Location> locationList) {
+        this.locationList = locationList;
     }
 
     @Override
@@ -111,7 +111,7 @@ public class Country implements Serializable {
 
     @Override
     public String toString() {
-        return "py.edu.columbia.tcc.model.content.Country[ idCountry=" + idCountry + " ]";
+        return "py.edu.columbia.tcc.model.Country[ idCountry=" + idCountry + " ]";
     }
     
 }

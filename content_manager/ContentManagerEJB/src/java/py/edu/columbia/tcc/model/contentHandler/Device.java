@@ -3,12 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package py.edu.columbia.tcc.model.content;
+package py.edu.columbia.tcc.model.contentHandler;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,7 +15,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -36,10 +34,8 @@ public class Device implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
     @Column(name = "id_device")
     private Integer idDevice;
-    @Basic(optional = false)
     @Column(name = "id_company")
     private long idCompany;
     @Column(name = "uuid", columnDefinition = "uuid", insertable = false, updatable = false)
@@ -48,14 +44,17 @@ public class Device implements Serializable {
     private String name;
     @Column(name = "description")
     private String description;
-    @Basic(optional = false)
     @Column(name = "active", insertable = false)
     private boolean active;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "device")
-    private Collection<DeviceContent> deviceContentCollection;
+    private List<Playbacks> playbacksList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "device")
+    private List<Audiences> audiencesList;
     @JoinColumn(name = "id_location", referencedColumnName = "id_location")
     @ManyToOne(optional = false)
     private Location idLocation;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "device")
+    private List<DeviceContent> deviceContentList;
 
     public Device() {
     }
@@ -119,12 +118,28 @@ public class Device implements Serializable {
         this.active = active;
     }
 
-    public Collection<DeviceContent> getDeviceContentCollection() {
-        return deviceContentCollection;
+    public List<DeviceContent> getDeviceContentList() {
+        return deviceContentList;
     }
 
-    public void setDeviceContentCollection(Collection<DeviceContent> deviceContentCollection) {
-        this.deviceContentCollection = deviceContentCollection;
+    public void setDeviceContentList(List<DeviceContent> deviceContentList) {
+        this.deviceContentList = deviceContentList;
+    }
+
+    public List<Playbacks> getPlaybacksList() {
+        return playbacksList;
+    }
+
+    public void setPlaybacksList(List<Playbacks> playbacksList) {
+        this.playbacksList = playbacksList;
+    }
+
+    public List<Audiences> getAudiencesList() {
+        return audiencesList;
+    }
+
+    public void setAudiencesList(List<Audiences> audiencesList) {
+        this.audiencesList = audiencesList;
     }
 
     public Location getIdLocation() {
@@ -157,7 +172,7 @@ public class Device implements Serializable {
 
     @Override
     public String toString() {
-        return "py.edu.columbia.tcc.model.content.Device[ idDevice=" + idDevice + " ]";
+        return "py.edu.columbia.tcc.model.contentHandler.Device[ idDevice=" + idDevice + " ]";
     }
     
 }

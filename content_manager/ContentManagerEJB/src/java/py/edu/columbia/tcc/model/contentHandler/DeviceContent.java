@@ -3,24 +3,21 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package py.edu.columbia.tcc.model.content;
+package py.edu.columbia.tcc.model.contentHandler;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -35,15 +32,26 @@ public class DeviceContent implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected DeviceContentPK deviceContentPK;
-    @Column(name = "uuid", columnDefinition = "uuid", insertable = false, updatable = false)
-    private UUID uuid;
-    @Column(name = "active", insertable = false)
+    @Column(name = "uuid_content", columnDefinition = "uuid", updatable = false)
+    private UUID uuidContent;
+    @Column(name = "uuid_device", columnDefinition = "uuid", updatable = false)
+    private UUID uuidDevice;
+    @Column(name = "active")
     private boolean active;
-    @Column(name = "downloaded", insertable = false)
+    @Column(name = "downloaded")
     private boolean downloaded;
-    @Column(name = "date_add", insertable = false)
+    @Column(name = "date_add")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateAdd;
+    @Column(name = "date_download")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateDownload;
+    @Column(name = "date_inactive")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateInactive;
+    @Column(name = "date_due")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateDue;
     @JoinColumn(name = "id_content", referencedColumnName = "id_content", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Content content;
@@ -58,9 +66,10 @@ public class DeviceContent implements Serializable {
         this.deviceContentPK = deviceContentPK;
     }
 
-    public DeviceContent(DeviceContentPK deviceContentPK, UUID uuid, boolean active, boolean downloaded) {
+    public DeviceContent(DeviceContentPK deviceContentPK, UUID uuidContent, UUID uuidDevice, boolean active, boolean downloaded) {
         this.deviceContentPK = deviceContentPK;
-        this.uuid = uuid;
+        this.uuidContent = uuidContent;
+        this.uuidDevice = uuidDevice;
         this.active = active;
         this.downloaded = downloaded;
     }
@@ -77,12 +86,20 @@ public class DeviceContent implements Serializable {
         this.deviceContentPK = deviceContentPK;
     }
 
-    public UUID getUuid() {
-        return uuid;
+    public UUID getUuidContent() {
+        return uuidContent;
     }
 
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
+    public void setUuidContent(UUID uuidContent) {
+        this.uuidContent = uuidContent;
+    }
+
+    public UUID getUuidDevice() {
+        return uuidDevice;
+    }
+
+    public void setUuidDevice(UUID uuidDevice) {
+        this.uuidDevice = uuidDevice;
     }
 
     public boolean getActive() {
@@ -107,6 +124,30 @@ public class DeviceContent implements Serializable {
 
     public void setDateAdd(Date dateAdd) {
         this.dateAdd = dateAdd;
+    }
+
+    public Date getDateDownload() {
+        return dateDownload;
+    }
+
+    public void setDateDownload(Date dateDownload) {
+        this.dateDownload = dateDownload;
+    }
+
+    public Date getDateInactive() {
+        return dateInactive;
+    }
+
+    public void setDateInactive(Date dateInactive) {
+        this.dateInactive = dateInactive;
+    }
+
+    public Date getDateDue() {
+        return dateDue;
+    }
+
+    public void setDateDue(Date dateDue) {
+        this.dateDue = dateDue;
     }
 
     public Content getContent() {
@@ -147,7 +188,7 @@ public class DeviceContent implements Serializable {
 
     @Override
     public String toString() {
-        return "py.edu.columbia.tcc.model.content.DeviceContent[ deviceContentPK=" + deviceContentPK + " ]";
+        return "py.edu.columbia.tcc.model.contentHandler.DeviceContent[ deviceContentPK=" + deviceContentPK + " ]";
     }
     
 }
