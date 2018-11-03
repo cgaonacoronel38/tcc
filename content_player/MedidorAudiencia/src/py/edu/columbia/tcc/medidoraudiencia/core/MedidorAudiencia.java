@@ -18,6 +18,8 @@ import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
 import org.opencv.objdetect.Objdetect;
 import org.opencv.videoio.VideoCapture;
+import org.opencv.videoio.Videoio;
+import py.edu.columbia.tcc.medidoraudiencia.objects.Mano;
 import py.edu.columbia.tcc.medidoraudiencia.objects.Rostro;
 import py.edu.columbia.tcc.medidoraudiencia.utils.Cons;
 
@@ -29,7 +31,7 @@ public class MedidorAudiencia extends Thread {
 
     private final CascadeClassifier detectorRostros;
     private final CascadeClassifier detectorManos;
-    
+
     private int audiencia;
     private List<Rostro> rostrosAudiencia;
     private List<Rostro> rostrosCandidatosAudiencia;
@@ -40,6 +42,8 @@ public class MedidorAudiencia extends Thread {
     private double tamanoRectMin;
     private double tamanoRectMax;
     private int minVecinos;
+    private VideoCapture video;
+    private Mano mano;
 
     public MedidorAudiencia() {
         System.load(getClass().getResource(Cons.LIBRERIA_OPENCV).getPath());
@@ -53,6 +57,7 @@ public class MedidorAudiencia extends Thread {
         rostrosCandidatosAudiencia = new ArrayList();
         detectorRostros = new CascadeClassifier(getClass().getResource(Cons.HAARCASCADE_FRONTALFACE_ALT2).getPath());
         detectorManos = new CascadeClassifier(getClass().getResource(Cons.HAARCASCADE_PUNHO).getPath());
+        video = new VideoCapture(0);
     }
 
     @Override
@@ -61,10 +66,7 @@ public class MedidorAudiencia extends Thread {
     }
 
     private void detectarAudiencia() {
-        VideoCapture video = new VideoCapture(0);
 
-//        video.set(Videoio.CV_CAP_PROP_FRAME_WIDTH, 1280);
-//        video.set(Videoio.CV_CAP_PROP_FRAME_HEIGHT, 720);
         Mat captura = new Mat();
         MatOfRect matRostrosDetectados = new MatOfRect();
         MatOfRect matManosDetectados = new MatOfRect();
@@ -78,16 +80,16 @@ public class MedidorAudiencia extends Thread {
 
                     List<Rostro> rostrosDetectados = new ArrayList();
                     List<Rostro> manosDetectados = new ArrayList();
-                   
+
                     video.retrieve(captura);
 
                     Mat capturaGris = new Mat();
                     Imgproc.cvtColor(captura, capturaGris, Imgproc.COLOR_RGB2GRAY);
-//                    Imgproc.equalizeHist(capturaGris, capturaGris);
+                    Imgproc.equalizeHist(capturaGris, capturaGris);
 
                     detectorRostros.detectMultiScale(capturaGris, matRostrosDetectados, factorEscala, minVecinos, Objdetect.CASCADE_SCALE_IMAGE, new Size(tamanoRectMin, tamanoRectMin), new Size(tamanoRectMax, tamanoRectMax));
                     detectorManos.detectMultiScale(captura, matManosDetectados, factorEscala, minVecinos, Objdetect.CASCADE_SCALE_IMAGE, new Size(tamanoRectMin, tamanoRectMin), new Size(tamanoRectMax, tamanoRectMax));
-                   
+
                     for (Rect rect : matRostrosDetectados.toArray()) {
                         Rostro rostro = new Rostro();
                         rostro.setCentroX(rect.x + rect.width / 2);
@@ -300,5 +302,10 @@ public class MedidorAudiencia extends Thread {
 
     public void setMinVecinos(int minVecinos) {
         this.minVecinos = minVecinos;
+    }
+
+    public void setResolucion(int ancho, int alto) {
+        video.set(Videoio.CV_CAP_PROP_FRAME_WIDTH, ancho);
+        video.set(Videoio.CV_CAP_PROP_FRAME_HEIGHT, alto);
     }
 }

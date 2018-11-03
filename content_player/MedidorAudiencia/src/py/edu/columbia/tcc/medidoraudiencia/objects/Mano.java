@@ -14,8 +14,10 @@ public class Mano {
     private int ancho;
     private int alto;
     private boolean arrastrar;
-    
-    public static enum DIRECCION{
+    private int centroMovX;
+    private int centroMovY;
+
+    public static enum DIRECCION {
         IZQUIERDA, DERECHA, ARRIBA, ABAJO, NINGUNO
     }
 
@@ -55,24 +57,31 @@ public class Mano {
         this.alto = alto;
     }
 
-    public boolean isArrastrar() {
-        return arrastrar;
-    }
+    public DIRECCION actualizarDireccion(Mano mano) {
 
-    public void setArrastrar(boolean arrastrar) {
-        this.arrastrar = arrastrar;
+        int distanciaX = centroMovX - mano.getCentroX();
+        int distanciaY = centroMovY - mano.getCentroY();
+
+        if (Math.abs(distanciaX) > ancho * Cons.TOLERANCIA_MOVIMIENTO_HORIZONTAL) {
+            centroMovX = mano.getCentroX();
+            if (distanciaX < 0) {
+                return DIRECCION.DERECHA;
+            } else {
+                return DIRECCION.IZQUIERDA;
+            }
+        }
+
+        if (Math.abs(distanciaY) > alto * Cons.TOLERANCIA_MOVIMIENTO_VERTICAL) {
+            centroMovY = mano.getCentroY();
+            if (distanciaY < 0) {
+                return DIRECCION.ARRIBA;
+            } else {
+                return DIRECCION.ABAJO;
+            }
+        }
+
+        return DIRECCION.NINGUNO;
     }
-    
-//    public DIRECCION calcularDireccion(Mano mano) {
-//        DIRECCION direccion = DIRECCION.NINGUNO;
-//        int movimientoX = mano.getCentroX() - centroX;
-//        int movimientoY = mano.getCentroY() - centroY;
-//        if(Math.abs(movimientoX) > Math.abs(movimientoY)){
-//            
-//        }
-//        
-//        this.arrastrar = arrastrar;
-//    }
 
     public boolean isManoAproximado(Mano mano) {
         boolean isMano = false;
@@ -82,5 +91,14 @@ public class Mano {
             isMano = true;
         }
         return isMano;
+    }
+
+    public void setAll(Mano mano) {
+        centroX = mano.getCentroX();
+        centroY = mano.getCentroY();
+        ancho = mano.getAncho();
+        alto = mano.getAlto();
+        centroMovX = mano.getCentroX();
+        centroMovY = mano.getCentroY();
     }
 }

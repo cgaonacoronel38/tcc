@@ -13,6 +13,8 @@ public class Cons {
     public static final String LIBRERIA_OPENCV = "/py/edu/columbia/tcc/medidoraudiencia/libs/libopencv_java320.so";
     
     public static final float TOLERANCIA_DESPLAZAMIENTO = 0.4f; //40%
+    public static final float TOLERANCIA_MOVIMIENTO_HORIZONTAL = 3.0f;
+    public static final float TOLERANCIA_MOVIMIENTO_VERTICAL = 1.0f;
     public static final int TOLERANCIA_ROSTRO_PERDIDO = 5; //5 segundos
     public static final int TOLERANCIA_ROSTRO_NUEVO = 2; //2 segundos
     public static final double FACTOR_ESCALA = 1.1;
