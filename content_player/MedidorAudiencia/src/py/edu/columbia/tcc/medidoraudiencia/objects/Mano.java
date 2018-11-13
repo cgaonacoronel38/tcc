@@ -13,16 +13,21 @@ public class Mano {
     private int centroY;
     private int ancho;
     private int alto;
-    private boolean arrastrar;
     private int centroMovX;
     private int centroMovY;
+    private boolean macheado;
+    private Date fechaDesde;
+    private Date fechaHasta;
+    private Direccion direccion;
 
-    public static enum DIRECCION {
+    public static enum Direccion {
         IZQUIERDA, DERECHA, ARRIBA, ABAJO, NINGUNO
     }
 
     public Mano() {
-        this.arrastrar = false;
+        this.macheado = false;
+        direccion = Direccion.NINGUNO;
+        centroMovX = -1;
     }
 
     public int getCentroX() {
@@ -57,30 +62,75 @@ public class Mano {
         this.alto = alto;
     }
 
-    public DIRECCION actualizarDireccion(Mano mano) {
+    public boolean isMatcheado() {
+        return macheado;
+    }
 
-        int distanciaX = centroMovX - mano.getCentroX();
-        int distanciaY = centroMovY - mano.getCentroY();
+    public void setMatcheado(boolean macheado) {
+        this.macheado = macheado;
+    }
+
+    public Date getFechaDesde() {
+        return fechaDesde;
+    }
+
+    public void setFechaDesde(Date fechaDesde) {
+        this.fechaDesde = fechaDesde;
+    }
+
+    public Date getFechaHasta() {
+        return fechaHasta;
+    }
+
+    public void setFechaHasta(Date fechaHasta) {
+        this.fechaHasta = fechaHasta;
+    }
+
+    public int getDuracion() {
+        return (int) (fechaHasta.getTime() - fechaDesde.getTime()) / 1000;
+    }
+
+    public int getDuracionMilis() {
+        return (int) (fechaHasta.getTime() - fechaDesde.getTime());
+    }
+
+    public Direccion getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(Direccion direccion) {
+        this.direccion = direccion;
+    }
+
+    public void actualizarDireccion() {
+        if (centroMovX == -1) {
+            centroMovX = centroX;
+            centroMovY = centroY;
+        }
+
+        direccion = Direccion.NINGUNO;
+
+        int distanciaX = centroMovX - centroX;
+        int distanciaY = centroMovY - centroY;
 
         if (Math.abs(distanciaX) > ancho * Cons.TOLERANCIA_MOVIMIENTO_HORIZONTAL) {
-            centroMovX = mano.getCentroX();
+            centroMovX = centroX;
             if (distanciaX < 0) {
-                return DIRECCION.DERECHA;
+                direccion = Direccion.IZQUIERDA;
             } else {
-                return DIRECCION.IZQUIERDA;
+                direccion = Direccion.DERECHA;
             }
         }
 
         if (Math.abs(distanciaY) > alto * Cons.TOLERANCIA_MOVIMIENTO_VERTICAL) {
-            centroMovY = mano.getCentroY();
+            centroMovY = centroY;
             if (distanciaY < 0) {
-                return DIRECCION.ARRIBA;
+                direccion = Direccion.ABAJO;
             } else {
-                return DIRECCION.ABAJO;
+                direccion = Direccion.ARRIBA;
             }
         }
 
-        return DIRECCION.NINGUNO;
     }
 
     public boolean isManoAproximado(Mano mano) {
@@ -91,14 +141,5 @@ public class Mano {
             isMano = true;
         }
         return isMano;
-    }
-
-    public void setAll(Mano mano) {
-        centroX = mano.getCentroX();
-        centroY = mano.getCentroY();
-        ancho = mano.getAncho();
-        alto = mano.getAlto();
-        centroMovX = mano.getCentroX();
-        centroMovY = mano.getCentroY();
     }
 }

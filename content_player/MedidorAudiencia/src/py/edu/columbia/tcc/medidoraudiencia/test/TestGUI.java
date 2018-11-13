@@ -5,7 +5,10 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.imageio.ImageIO;
+import javax.swing.JFrame;
 import py.edu.columbia.tcc.medidoraudiencia.core.MedidorAudiencia;
 import py.edu.columbia.tcc.medidoraudiencia.core.MedidorAudienciaListener;
 import py.edu.columbia.tcc.medidoraudiencia.objects.Rostro;
@@ -19,26 +22,27 @@ public class TestGUI extends javax.swing.JFrame {
     private MedidorAudiencia medidorAudiencia;
 
     private void initMedidorAudiencia() {
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
         medidorAudiencia = new MedidorAudiencia();
         medidorAudiencia.setListener(new MedidorAudienciaListener() {
             @Override
             public void onGestoIzquierda() {
-                System.out.println("Reproductor: Anterior");
+                System.out.println(sdf.format(new Date()) +" - " + "Reproductor: Anterior");
             }
             
             @Override
             public void onGestoDerecha() {
-                System.out.println("Reproductor: Siguiente");
+                System.out.println(sdf.format(new Date()) +" - " + "Reproductor: Siguiente");
             }
 
             @Override
             public void onGestoArriba() {
-                System.out.println("Mouse: Scrollup");
+                System.out.println(sdf.format(new Date()) +" - " + "Mouse: Scrollup");
             }
 
             @Override
             public void onGestoAbajo() {
-                System.out.println("Mouse: Scrolldown");
+                System.out.println(sdf.format(new Date()) +" - " + "Mouse: Scrolldown");
             }
 
             @Override
@@ -57,17 +61,17 @@ public class TestGUI extends javax.swing.JFrame {
 
             @Override
             public void onNuevoAudiente(Rostro rostro) {
-                System.out.println("Nuevo Audiente! " + rostro.toString());
+                System.out.println(sdf.format(new Date()) +" - " + "Nuevo Audiente! " + rostro.toString());
             }
 
             @Override
             public void onGestoAgarrar() {
-                System.out.println("Reproductor: Pausa");
+                System.out.println(sdf.format(new Date()) +" - " + "Reproductor: Pausa");
             }
 
             @Override
             public void onGestoSoltar() {
-                System.out.println("Reproductor: Reanudar");
+                System.out.println(sdf.format(new Date()) +" - " + "Reproductor: Reanudar");
             }
         });
 
@@ -165,6 +169,7 @@ public class TestGUI extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setMinimumSize(new java.awt.Dimension(600, 450));
 
         pnImg.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -267,7 +272,9 @@ public class TestGUI extends javax.swing.JFrame {
             }
         });
 
-        cbResolucion.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1152x864    4:3", "1024x768    4:3", "  800x600    4:3", "  640x480    4:3", "  320x240    4:3" }));
+        cbResolucion.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1152x864    4:3", "1024x768    4:3", "800x600    4:3", "640x480    4:3", "320x240    4:3" }));
+        cbResolucion.setSelectedIndex(2);
+        cbResolucion.setToolTipText("");
         cbResolucion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbResolucionActionPerformed(evt);

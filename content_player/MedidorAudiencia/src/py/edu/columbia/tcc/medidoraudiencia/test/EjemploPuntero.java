@@ -622,7 +622,7 @@ public class EjemploPuntero extends JPanel {
                     Core.hconcat(src2, dst2);
 
                     List<Mat> srcResult = Arrays.asList(dst, dst2);
-                    Core.vconcat(srcResult, result);
+                    Core.hconcat(srcResult, result);
 
                     v.frametolabel(result);
 

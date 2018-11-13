@@ -86,7 +86,11 @@ public class Rostro {
      * @return duración en segundos
      */
     public int getDuracion() {
-        return (int)(fechaHasta.getTime() - fechaDesde.getTime()) / 1000;
+        return (int) (fechaHasta.getTime() - fechaDesde.getTime()) / 1000;
+    }
+
+    public int getDuracionMilis() {
+        return (int)(fechaHasta.getTime() - fechaDesde.getTime());
     }
 
     public boolean isMatcheado() {
